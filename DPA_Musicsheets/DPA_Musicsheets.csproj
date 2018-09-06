@@ -105,6 +105,11 @@
     </ApplicationDefinition>
     <Compile Include="Managers\MidiToLilyHelper.cs" />
     <Compile Include="Managers\MusicLoader.cs" />
+    <Compile Include="Models\Domain\Length.cs" />
+    <Compile Include="Models\Domain\Note.cs" />
+    <Compile Include="Models\Domain\Pitch.cs" />
+    <Compile Include="Models\Domain\Token.cs" />
+    <Compile Include="Models\Domain\Tone.cs" />
     <Compile Include="Models\LilypondToken.cs" />
     <Compile Include="Models\LilypondTokenKind.cs" />
     <Compile Include="ViewModels\MidiPlayerViewModel.cs" />
