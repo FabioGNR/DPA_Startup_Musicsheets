@@ -105,11 +105,15 @@
     </ApplicationDefinition>
     <Compile Include="Managers\MidiToLilyHelper.cs" />
     <Compile Include="Managers\MusicLoader.cs" />
+    <Compile Include="Models\Domain\Composition.cs" />
+    <Compile Include="Models\Domain\Denominator.cs" />
     <Compile Include="Models\Domain\Length.cs" />
     <Compile Include="Models\Domain\Note.cs" />
     <Compile Include="Models\Domain\Pitch.cs" />
     <Compile Include="Models\Domain\Rest.cs" />
     <Compile Include="Models\Domain\Symbol.cs" />
+    <Compile Include="Models\Domain\Tempo.cs" />
+    <Compile Include="Models\Domain\TimeSignature.cs" />
     <Compile Include="Models\Domain\Token.cs" />
     <Compile Include="Models\Domain\Tone.cs" />
     <Compile Include="Models\LilypondToken.cs" />

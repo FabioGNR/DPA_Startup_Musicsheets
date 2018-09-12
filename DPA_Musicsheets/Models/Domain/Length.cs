@@ -8,7 +8,7 @@ namespace DPA_Musicsheets.Models.Domain
 {
     class Length
     {
-        public int Denominator { get; set; } // Length of the Symbol is 1/Denominator
+        public Denominator Denominator { get; set; } // Length of the Symbol is 1/Denominator
         public bool Dotted { get; set; } // Is Note one and a half times as long
     }
 }
