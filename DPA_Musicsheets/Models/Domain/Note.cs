@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace DPA_Musicsheets.Models.Domain
 {
-    class Note : Token
+    class Note : Symbol
     {
-        public Length Length { get; set; }
-        public Pitch Pitch { get; set; }
+        Pitch Pitch { get; set; }
     }
 }

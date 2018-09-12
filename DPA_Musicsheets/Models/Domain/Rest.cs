@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace DPA_Musicsheets.Models.Domain
 {
-    abstract class Token
+    class Rest : Symbol
     {
-
+        
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DPA_Musicsheets.Models.Domain
 {
-    class Pitch
+    class Pitch : Note
     {
         public Tone Tone { private get; set; }
         public int OctaveOffset { get; set; } = 0;
