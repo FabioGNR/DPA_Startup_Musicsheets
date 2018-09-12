@@ -1,5 +1,8 @@
 ﻿
+using DPA_Musicsheets.Factories;
 using DPA_Musicsheets.Models;
+using DPA_Musicsheets.Models.Domain;
+using DPA_Musicsheets.Utils;
 using DPA_Musicsheets.ViewModels;
 using PSAMControlLibrary;
 using PSAMWPFControlLibrary;
@@ -48,6 +51,12 @@ namespace DPA_Musicsheets.Managers
         /// <param name="fileName"></param>
         public void OpenFile(string fileName)
         {
+            FileType type = FileUtils.ParseFileType(fileName);
+
+            ICompositionFactory factory = AbstractCompositionFactory.GetFactory(type);
+
+            Composition composition = factory.ReadComposition(fileName);
+
             if (Path.GetExtension(fileName).EndsWith(".mid"))
             {
                 MidiSequence = new Sequence();
@@ -64,7 +73,7 @@ namespace DPA_Musicsheets.Managers
                 {
                     sb.AppendLine(line);
                 }
-                
+
                 this.LilypondText = sb.ToString();
                 this.LilypondViewModel.LilypondTextLoaded(this.LilypondText);
             }
@@ -74,6 +83,8 @@ namespace DPA_Musicsheets.Managers
             }
 
             LoadLilypondIntoWpfStaffsAndMidi(LilypondText);
+
+
         }
 
         /// <summary>
@@ -166,11 +177,11 @@ namespace DPA_Musicsheets.Managers
                             var channelMessage = midiEvent.MidiMessage as ChannelMessage;
                             if (channelMessage.Command == ChannelCommand.NoteOn)
                             {
-                                if(channelMessage.Data2 > 0) // Data2 = loudness
+                                if (channelMessage.Data2 > 0) // Data2 = loudness
                                 {
                                     // Append the new note.
                                     lilypondContent.Append(MidiToLilyHelper.GetLilyNoteName(previousMidiKey, channelMessage.Data1));
-                                    
+
                                     previousMidiKey = channelMessage.Data1;
                                     startedNoteIsClosed = false;
                                 }
@@ -308,7 +319,7 @@ namespace DPA_Musicsheets.Managers
 
                         var note = new Note(currentToken.Value[0].ToString().ToUpper(), alter, previousOctave, (MusicalSymbolDuration)noteLength, NoteStemDirection.Up, tie, new List<NoteBeamType>() { NoteBeamType.Single });
                         note.NumberOfDots += currentToken.Value.Count(c => c.Equals('.'));
-                        
+
                         symbols.Add(note);
                         break;
                     case LilypondTokenKind.Rest:
@@ -345,7 +356,7 @@ namespace DPA_Musicsheets.Managers
 
             return symbols;
         }
-        
+
         private static LinkedList<LilypondToken> GetTokensFromLilypond(string content)
         {
             var tokens = new LinkedList<LilypondToken>();
@@ -400,7 +411,7 @@ namespace DPA_Musicsheets.Managers
 
             sequence.Save(fileName);
         }
-        
+
         /// <summary>
         /// We create MIDI from WPF staffs, 2 different dependencies, not a good practice.
         /// TODO: Create MIDI from our own domain classes.
@@ -493,9 +504,10 @@ namespace DPA_Musicsheets.Managers
             };
 
             process.Start();
-            while (!process.HasExited) { /* Wait for exit */
-                }
-                if (sourceFolder != targetFolder || sourceFileName != targetFileName)
+            while (!process.HasExited)
+            { /* Wait for exit */
+            }
+            if (sourceFolder != targetFolder || sourceFileName != targetFileName)
             {
                 File.Move(sourceFolder + "\\" + sourceFileName + ".pdf", targetFolder + "\\" + targetFileName + ".pdf");
                 File.Delete(tmpFileName);

@@ -103,6 +103,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Factories\AbstractCompositionFactory.cs" />
+    <Compile Include="Factories\ICompositionFactory.cs" />
+    <Compile Include="Factories\LilyPondCompositionFactory.cs" />
+    <Compile Include="Factories\MidiCompositionFactory.cs" />
     <Compile Include="Managers\MidiToLilyHelper.cs" />
     <Compile Include="Managers\MusicLoader.cs" />
     <Compile Include="Models\Domain\Composition.cs" />
@@ -116,8 +120,10 @@
     <Compile Include="Models\Domain\TimeSignature.cs" />
     <Compile Include="Models\Domain\Token.cs" />
     <Compile Include="Models\Domain\Tone.cs" />
+    <Compile Include="Models\FileType.cs" />
     <Compile Include="Models\LilypondToken.cs" />
     <Compile Include="Models\LilypondTokenKind.cs" />
+    <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="ViewModels\MidiPlayerViewModel.cs" />
     <Compile Include="ViewModels\StaffsViewModel.cs" />
     <Compile Include="Views\MidiPlayerCtrl.xaml.cs">
