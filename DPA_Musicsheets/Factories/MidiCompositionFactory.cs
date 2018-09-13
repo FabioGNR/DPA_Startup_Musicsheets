@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DPA_Musicsheets.Models.Domain;
+using Sanford.Multimedia.Midi;
 
 namespace DPA_Musicsheets.Factories
 {
@@ -11,7 +12,10 @@ namespace DPA_Musicsheets.Factories
     {
         public Composition ReadComposition(string fileName)
         {
-            throw new NotImplementedException();
+            var midiSequence = new Sequence();
+            midiSequence.Load(fileName);
+
+            midiSequence.FirstOrDefault().;
         }
     }
 }

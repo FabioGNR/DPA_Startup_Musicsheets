@@ -8,6 +8,6 @@ namespace DPA_Musicsheets.Models.Domain
 {
     class Note : Symbol
     {
-        Pitch Pitch { get; set; }
+        public Pitch Pitch { get; set; }
     }
 }

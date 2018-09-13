@@ -10,5 +10,6 @@ namespace DPA_Musicsheets.Models.Domain
     {
         public Tone Tone { private get; set; }
         public int OctaveOffset { get; set; } = 0;
+        public Accidental Accidental { get; set; }
     }
 }

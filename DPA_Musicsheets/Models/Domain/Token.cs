@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DPA_Musicsheets.Models.Domain
 {
-    abstract class Token
+    public abstract class Token
     {
 
     }

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace DPA_Musicsheets.Models.Domain
 {
-    enum Tone
+    public enum Accidental
     {
-        C, D, E, F, G, A, B
+        None, Flat, Sharp
     }
 }

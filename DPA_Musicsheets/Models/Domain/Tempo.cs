@@ -6,16 +6,17 @@ using System.Threading.Tasks;
 
 namespace DPA_Musicsheets.Models.Domain
 {
-    class Tempo
+    class Tempo : Token
     {
         public uint BPM { get; set; }
 
-        public Tempo(uint bpm)
+        public Tempo(int bpm)
         {
-            if (bpm == 0)
+            if (bpm <= 0)
             {
                 throw new ArgumentException("BPM must be over 0", nameof(bpm));
             }
+            BPM = Convert.ToUInt32(bpm);
         }
     }
 }
