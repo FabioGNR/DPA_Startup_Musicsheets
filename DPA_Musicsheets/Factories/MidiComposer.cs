@@ -12,15 +12,14 @@ namespace DPA_Musicsheets.Factories
     {
 
         private const int CENTRAL_C = 60;
+        private const int TONES_IN_OCTAVE = 12;
 
         private readonly Sequence sequence;
         private readonly IEnumerable<MidiEvent> events;
         private readonly Composition composition = new Composition();
 
         private TimeSignature currentTimeSignature;
-
         private Note currentNote = null;
-        private long lastNoteEventTicks = 0;
 
         public MidiComposer(Sequence sequence)
         {
@@ -54,6 +53,24 @@ namespace DPA_Musicsheets.Factories
                 return;
             if (msg.Data2 > 0)
             {
+                if (currentTimeSignature == null)
+                {
+                    currentTimeSignature = new TimeSignature
+                    {
+                        Count = 4,
+                        Denominator = new Denominator(4)
+                    };
+                    composition.Tokens.Add(currentTimeSignature);
+                }
+                if (evt.DeltaTicks > 0)
+                {
+                    Length length = CalculateLength(evt.DeltaTicks);
+                    Rest rest = new Rest
+                    {
+                        Length = length
+                    };
+                    composition.Tokens.Add(rest);
+                }
                 Pitch pitch = new Pitch();
                 currentNote = new Note
                 {
@@ -99,56 +116,26 @@ namespace DPA_Musicsheets.Factories
 
         private Pitch GetPitch(int keyCode)
         {
-            Tone tone;
+            Tone tone = Tone.C;
             Accidental acc = Accidental.None;
 
-            int toneNumber = keyCode % 12;
-            switch (toneNumber)
+            int toneNumber = keyCode % TONES_IN_OCTAVE;
+
+            var values = Enum.GetValues(typeof(Tone)).Cast<int>();
+            for (int i = 0; i <= toneNumber; i++)
             {
-                case 0:
-                    tone = Tone.C;
-                    break;
-                case 1:
-                    tone = Tone.C;
+
+                if (values.Contains(i))
+                {
+                    tone = (Tone)i;
+                    acc = Accidental.None;
+                }
+                else
+                {
                     acc = Accidental.Sharp;
-                    break;
-                case 2:
-                    tone = Tone.D;
-                    break;
-                case 3:
-                    tone = Tone.D;
-                    acc = Accidental.Sharp;
-                    break;
-                case 4:
-                    tone = Tone.E;
-                    break;
-                case 5:
-                    tone = Tone.F;
-                    break;
-                case 6:
-                    tone = Tone.F;
-                    acc = Accidental.Sharp;
-                    break;
-                case 7:
-                    tone = Tone.G;
-                    break;
-                case 8:
-                    tone = Tone.G;
-                    acc = Accidental.Sharp;
-                    break;
-                case 9:
-                    tone = Tone.A;
-                    break;
-                case 10:
-                    tone = Tone.A;
-                    acc = Accidental.Sharp;
-                    break;
-                case 11:
-                    tone = Tone.B;
-                    break;
-                default:
-                    throw new ArgumentException("Tone does not exist", nameof(keyCode));
+                }
             }
+
             return new Pitch
             {
                 Tone = tone,
@@ -199,7 +186,7 @@ namespace DPA_Musicsheets.Factories
                 events = events.Concat(sequence[i].Iterator());
             }
             // sort based on time
-            return events.OrderBy(evt => evt.AbsoluteTicks);
+            return events.OrderBy(evt => evt.AbsoluteTicks).ThenByDescending(evt => evt.DeltaTicks);
         }
     }
 }

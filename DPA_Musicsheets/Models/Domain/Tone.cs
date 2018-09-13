@@ -8,6 +8,6 @@ namespace DPA_Musicsheets.Models.Domain
 {
     public enum Tone
     {
-        C, D, E, F, G, A, B
+        C = 0, D = 2, E = 4, F = 5, G = 7, A = 9, B = 11
     }
 }
