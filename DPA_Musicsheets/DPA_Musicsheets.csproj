@@ -106,6 +106,7 @@
     <Compile Include="Factories\AbstractCompositionFactory.cs" />
     <Compile Include="Factories\ICompositionFactory.cs" />
     <Compile Include="Factories\LilyPondCompositionFactory.cs" />
+    <Compile Include="Factories\MidiComposer.cs" />
     <Compile Include="Factories\MidiCompositionFactory.cs" />
     <Compile Include="Managers\MidiToLilyHelper.cs" />
     <Compile Include="Managers\MusicLoader.cs" />

@@ -15,7 +15,9 @@ namespace DPA_Musicsheets.Factories
             var midiSequence = new Sequence();
             midiSequence.Load(fileName);
 
-            midiSequence.FirstOrDefault().;
+            MidiComposer midiComposer = new MidiComposer(midiSequence);
+
+            return midiComposer.Compose();
         }
     }
 }

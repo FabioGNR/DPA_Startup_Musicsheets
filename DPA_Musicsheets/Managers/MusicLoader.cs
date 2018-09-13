@@ -1,7 +1,6 @@
 ﻿
 using DPA_Musicsheets.Factories;
 using DPA_Musicsheets.Models;
-using DPA_Musicsheets.Models.Domain;
 using DPA_Musicsheets.Utils;
 using DPA_Musicsheets.ViewModels;
 using PSAMControlLibrary;
@@ -55,7 +54,7 @@ namespace DPA_Musicsheets.Managers
 
             ICompositionFactory factory = AbstractCompositionFactory.GetFactory(type);
 
-            Composition composition = factory.ReadComposition(fileName);
+            Models.Domain.Composition composition = factory.ReadComposition(fileName);
 
             if (Path.GetExtension(fileName).EndsWith(".mid"))
             {
