@@ -11,5 +11,10 @@ namespace DPA_Musicsheets.Models.Domain
         public List<Token> Tokens { get; set; }
         public string FileName { get; set; }
         public string Title { get; set; }
+
+        public Composition()
+        {
+            Tokens = new List<Token>();
+        }
     }
 }

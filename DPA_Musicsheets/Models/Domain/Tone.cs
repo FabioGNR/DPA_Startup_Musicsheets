@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DPA_Musicsheets.Models.Domain
 {
-    enum Tone
+    public enum Tone
     {
         C, D, E, F, G, A, B
     }

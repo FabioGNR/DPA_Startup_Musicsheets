@@ -62,26 +62,31 @@ namespace DPA_Musicsheets.Factories
             }
             else if (currentNote != null)
             {
-                Length length = CalculateLength(evt.DeltaTicks);
-                currentNote.Length = length;
-                composition.Tokens.Add(currentNote);
-                currentNote = null;
+                EndCurrentNote(evt);
             }
+        }
+
+        private void EndCurrentNote(MidiEvent evt)
+        {
+            Length length = CalculateLength(evt.DeltaTicks);
+            currentNote.Length = length;
+            composition.Tokens.Add(currentNote);
+            currentNote = null;
         }
 
         private Length CalculateLength(int deltaTicks)
         {
-            double amountOfBeatNotes = deltaTicks / sequence.Division;
+            double amountOfBeatNotes = (double)deltaTicks / (double)sequence.Division;
             double amountOfFullNotes = amountOfBeatNotes / currentTimeSignature.Denominator.Value;
 
             int n = 0;
             int denominator = (int)Math.Pow(2, n);
-            while (1 / denominator > amountOfFullNotes)
+            while (1f / denominator > amountOfFullNotes)
             {
                 n++;
                 denominator = (int)Math.Pow(2, n);
             }
-            double baseNoteLength = 1 / denominator;
+            double baseNoteLength = 1f / denominator;
             int amountOfDots = Math.Min(4, (int)Math.Log(-baseNoteLength / (amountOfFullNotes - 2 * baseNoteLength), 2));
             Length length = new Length
             {
@@ -177,15 +182,21 @@ namespace DPA_Musicsheets.Factories
                     int microSecondsPB = (msgBytes[0] << 16 | msgBytes[1] << 8 | msgBytes[2]);
                     composition.Tokens.Add(new Tempo(60_000_000 / microSecondsPB));
                     break;
+                case MetaType.EndOfTrack:
+                    if (currentNote != null)
+                    {
+                        EndCurrentNote(evt);
+                    }
+                    break;
             }
         }
 
         private IEnumerable<MidiEvent> JoinTracks(Sequence sequence)
         {
-            var events = new List<MidiEvent>();
+            IEnumerable<MidiEvent> events = new List<MidiEvent>();
             for (int i = 0; i < Math.Min(2, sequence.Count); i++)
             {
-                events.Concat(sequence[i].Iterator());
+                events = events.Concat(sequence[i].Iterator());
             }
             // sort based on time
             return events.OrderBy(evt => evt.AbsoluteTicks);
