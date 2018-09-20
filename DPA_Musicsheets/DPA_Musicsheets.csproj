@@ -105,6 +105,7 @@
     </ApplicationDefinition>
     <Compile Include="Builders\ClefBuilder.cs" />
     <Compile Include="Builders\SymbolBuilder.cs" />
+    <Compile Include="Builders\TimeSignatureBuilder.cs" />
     <Compile Include="Converters\ITokenVisitor.cs" />
     <Compile Include="Converters\ToMidiVisitor.cs" />
     <Compile Include="Converters\ToStaffsVisitor.cs" />
