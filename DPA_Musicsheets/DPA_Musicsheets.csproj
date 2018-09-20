@@ -105,6 +105,7 @@
     </ApplicationDefinition>
     <Compile Include="Builders\SymbolBuilder.cs" />
     <Compile Include="Converters\ITokenVisitor.cs" />
+    <Compile Include="Converters\ToMidiVisitor.cs" />
     <Compile Include="Converters\ToStaffsVisitor.cs" />
     <Compile Include="Factories\AbstractCompositionFactory.cs" />
     <Compile Include="Factories\ICompositionFactory.cs" />
@@ -116,6 +117,8 @@
     <Compile Include="Managers\MusicLoader.cs" />
     <Compile Include="Models\Domain\Accidental.cs" />
     <Compile Include="Models\Domain\BarLine.cs" />
+    <Compile Include="Models\Domain\Clef.cs" />
+    <Compile Include="Models\Domain\ClefTone.cs" />
     <Compile Include="Models\Domain\Composition.cs" />
     <Compile Include="Models\Domain\Denominator.cs" />
     <Compile Include="Models\Domain\Length.cs" />

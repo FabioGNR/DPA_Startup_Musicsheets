@@ -14,25 +14,6 @@ namespace DPA_Musicsheets.Converters
 
         public IEnumerable<PSAMControlLibrary.MusicalSymbol> Symbols => _symbols.AsEnumerable();
 
-        private int GetAlterFromPitch(Pitch pitch)
-        {
-            var accidental = pitch.Accidental;
-            switch (accidental)
-            {
-                case Accidental.Sharp:
-                    return 1;
-                case Accidental.Flat:
-                    return -1;
-                default:
-                    return 0;
-            }
-        }
-
-        private PSAMControlLibrary.MusicalSymbolDuration ToDuration(Length length)
-        {
-            return (PSAMControlLibrary.MusicalSymbolDuration)length.Denominator.Value;
-        }
-
         public void ProcessToken(Note note)
         {
             var staffNote = new PSAMControlLibrary.Note(
@@ -80,6 +61,47 @@ namespace DPA_Musicsheets.Converters
         public void ProcessToken(Token any)
         {
 
+        }
+
+        public void ProcessToken(Clef clef)
+        {
+            var staffClef = new PSAMControlLibrary.Clef(
+                ToClefType(clef.Tone), 4);
+            _symbols.Add(staffClef);
+        }
+
+        private int GetAlterFromPitch(Pitch pitch)
+        {
+            var accidental = pitch.Accidental;
+            switch (accidental)
+            {
+                case Accidental.Sharp:
+                    return 1;
+                case Accidental.Flat:
+                    return -1;
+                default:
+                    return 0;
+            }
+        }
+
+        private PSAMControlLibrary.MusicalSymbolDuration ToDuration(Length length)
+        {
+            return (PSAMControlLibrary.MusicalSymbolDuration)length.Denominator.Value;
+        }
+
+        private PSAMControlLibrary.ClefType ToClefType(ClefTone clef)
+        {
+            switch (clef)
+            {
+                case ClefTone.C:
+                    return PSAMControlLibrary.ClefType.CClef;
+                case ClefTone.G:
+                    return PSAMControlLibrary.ClefType.GClef;
+                case ClefTone.F:
+                    return PSAMControlLibrary.ClefType.FClef;
+                default:
+                    return PSAMControlLibrary.ClefType.GClef;
+            }
         }
     }
 }
