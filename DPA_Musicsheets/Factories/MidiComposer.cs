@@ -57,11 +57,10 @@ namespace DPA_Musicsheets.Factories
             {
                 if (currentTimeSignature == null)
                 {
-                    currentTimeSignature = new TimeSignature
-                    {
-                        Count = 4,
-                        Denominator = new Denominator(4)
-                    };
+                    Builders.TimeSignatureBuilder timeSignatureBuilder = new Builders.TimeSignatureBuilder();
+                    timeSignatureBuilder.WithCount(4);
+                    timeSignatureBuilder.WithDenominator(4);
+                    currentTimeSignature = timeSignatureBuilder.Build();
                     composition.Tokens.Add(currentTimeSignature);
                 }
                 if (evt.DeltaTicks > 0)
@@ -162,11 +161,10 @@ namespace DPA_Musicsheets.Factories
                 case MetaType.TimeSignature:
                     int count = msgBytes[0];
                     int denominator = (int)Math.Pow(msgBytes[1], 2);
-                    currentTimeSignature = new TimeSignature
-                    {
-                        Count = count,
-                        Denominator = new Denominator(denominator)
-                    };
+                    Builders.TimeSignatureBuilder timeSignatureBuilder = new Builders.TimeSignatureBuilder();
+                    timeSignatureBuilder.WithCount(count);
+                    timeSignatureBuilder.WithDenominator(denominator);
+                    currentTimeSignature = timeSignatureBuilder.Build();
                     composition.Tokens.Add(currentTimeSignature);
                     break;
                 case MetaType.Tempo:

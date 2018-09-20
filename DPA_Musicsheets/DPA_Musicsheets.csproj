@@ -104,6 +104,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Builders\SymbolBuilder.cs" />
+    <Compile Include="Builders\TimeSignatureBuilder.cs" />
     <Compile Include="Converters\ITokenVisitor.cs" />
     <Compile Include="Converters\ToStaffsVisitor.cs" />
     <Compile Include="Factories\AbstractCompositionFactory.cs" />
