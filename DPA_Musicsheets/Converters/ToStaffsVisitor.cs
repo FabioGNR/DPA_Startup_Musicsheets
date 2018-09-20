@@ -66,7 +66,7 @@ namespace DPA_Musicsheets.Converters
         public void ProcessToken(Clef clef)
         {
             var staffClef = new PSAMControlLibrary.Clef(
-                ToClefType(clef.Tone), 4);
+                ToClefType(clef.Tone), clef.Bar);
             _symbols.Add(staffClef);
         }
 

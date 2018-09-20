@@ -31,6 +31,12 @@ namespace DPA_Musicsheets.Factories
 
         public Composition Compose()
         {
+            // for midi always use G Clef
+            composition.Tokens.Add(
+                new ClefBuilder()
+                .WithTone(ClefTone.G)
+                .OnBar(2)
+                .Build());
             foreach (var evt in events)
             {
                 switch (evt.MidiMessage.MessageType)
