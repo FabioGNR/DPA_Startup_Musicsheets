@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DPA_Musicsheets.Models.Domain
 {
-    abstract class Symbol : Token
+    public abstract class Symbol : Token
     {
         public Length Length { get; set; }
     }

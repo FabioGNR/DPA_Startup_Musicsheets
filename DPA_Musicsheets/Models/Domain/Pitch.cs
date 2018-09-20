@@ -8,7 +8,7 @@ namespace DPA_Musicsheets.Models.Domain
 {
     public class Pitch
     {
-        public Tone Tone { private get; set; }
+        public Tone Tone { get; set; }
         public int OctaveOffset { get; set; } = 0;
         public Accidental Accidental { get; set; }
     }
