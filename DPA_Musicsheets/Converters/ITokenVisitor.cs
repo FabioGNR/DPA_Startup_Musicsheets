@@ -14,6 +14,7 @@ namespace DPA_Musicsheets.Converters
         void ProcessToken(Barline barLine);
         void ProcessToken(TimeSignature timeSignature);
         void ProcessToken(Tempo tempo);
+        void ProcessToken(Clef clef);
         void ProcessToken(Token any);
     }
 }
