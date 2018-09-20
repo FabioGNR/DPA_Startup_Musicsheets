@@ -17,6 +17,7 @@ namespace DPA_Musicsheets.Factories
         private readonly Sequence sequence;
         private readonly IEnumerable<MidiEvent> events;
         private readonly Composition composition = new Composition();
+        private decimal currentBarPercentage = 0;
 
         private TimeSignature currentTimeSignature;
         private Note currentNote = null;
@@ -70,6 +71,8 @@ namespace DPA_Musicsheets.Factories
                         Length = length
                     };
                     composition.Tokens.Add(rest);
+                    CheckForBar(length);
+
                 }
                 Pitch pitch = new Pitch();
                 currentNote = new Note
@@ -80,7 +83,20 @@ namespace DPA_Musicsheets.Factories
             else if (currentNote != null)
             {
                 EndCurrentNote(evt);
+
             }
+        }
+
+        private void CheckForBar(Length length)
+        {
+            int denom = length.Denominator.Value;
+            currentBarPercentage += 1m / denom * (2m - 1m / (decimal)Math.Pow(2, length.AmountOfDots));
+            if (currentBarPercentage >= (decimal)currentTimeSignature.Count / currentTimeSignature.Denominator.Value)
+            {
+                composition.Tokens.Add(new BarLine());
+                currentBarPercentage = 0;
+            }
+
         }
 
         private void EndCurrentNote(MidiEvent evt)
@@ -89,6 +105,7 @@ namespace DPA_Musicsheets.Factories
             currentNote.Length = length;
             composition.Tokens.Add(currentNote);
             currentNote = null;
+            CheckForBar(length);
         }
 
         private Length CalculateLength(int deltaTicks)
