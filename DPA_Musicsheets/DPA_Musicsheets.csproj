@@ -104,6 +104,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Builders\SymbolBuilder.cs" />
+    <Compile Include="Converters\ITokenVisitor.cs" />
+    <Compile Include="Converters\ToStaffsVisitor.cs" />
     <Compile Include="Factories\AbstractCompositionFactory.cs" />
     <Compile Include="Factories\ICompositionFactory.cs" />
     <Compile Include="Factories\LilyPondCompositionFactory.cs" />

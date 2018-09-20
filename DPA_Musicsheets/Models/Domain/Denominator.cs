@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DPA_Musicsheets.Models.Domain
 {
-    class Denominator
+    public class Denominator
     {
         public int Value { get; private set; }
 

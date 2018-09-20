@@ -93,7 +93,7 @@ namespace DPA_Musicsheets.Factories
             currentBarPercentage += 1m / denom * (2m - 1m / (decimal)Math.Pow(2, length.AmountOfDots));
             if (currentBarPercentage >= (decimal)currentTimeSignature.Count / currentTimeSignature.Denominator.Value)
             {
-                composition.Tokens.Add(new BarLine());
+                composition.Tokens.Add(new Barline());
                 currentBarPercentage = 0;
             }
 

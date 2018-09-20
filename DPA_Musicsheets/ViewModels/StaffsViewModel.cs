@@ -36,7 +36,7 @@ namespace DPA_Musicsheets.ViewModels
         /// We don't want to reset the collection because we don't want other classes to create an observable collection.
         /// </summary>
         /// <param name="symbols">The new symbols to show.</param>
-        public void SetStaffs(IList<MusicalSymbol> symbols)
+        public void SetStaffs(IEnumerable<MusicalSymbol> symbols)
         {
             Staffs.Clear();
             foreach (var symbol in symbols)

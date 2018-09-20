@@ -1,4 +1,5 @@
 ﻿
+using DPA_Musicsheets.Converters;
 using DPA_Musicsheets.Factories;
 using DPA_Musicsheets.Models;
 using DPA_Musicsheets.Utils;
@@ -56,6 +57,7 @@ namespace DPA_Musicsheets.Managers
 
             Models.Domain.Composition composition = factory.ReadComposition(fileName);
 
+
             if (Path.GetExtension(fileName).EndsWith(".mid"))
             {
                 MidiSequence = new Sequence();
@@ -82,7 +84,7 @@ namespace DPA_Musicsheets.Managers
             }
 
             LoadLilypondIntoWpfStaffsAndMidi(LilypondText);
-
+            LoadCompositionIntoViewModel(composition);
 
         }
 
@@ -104,6 +106,16 @@ namespace DPA_Musicsheets.Managers
 
             MidiSequence = GetSequenceFromWPFStaffs();
             MidiPlayerViewModel.MidiSequence = MidiSequence;
+        }
+
+        public void LoadCompositionIntoViewModel(Models.Domain.Composition composition)
+        {
+            var staffConverter = new ToStaffsVisitor();
+            foreach (var token in composition.Tokens)
+            {
+                token.Accept(staffConverter);
+            }
+            this.StaffsViewModel.SetStaffs(staffConverter.Symbols);
         }
 
         #region Midi loading (loads midi to lilypond)
