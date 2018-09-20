@@ -122,6 +122,8 @@ namespace DPA_Musicsheets.Factories
             }
             double baseNoteLength = 1f / denominator;
             int amountOfDots = Math.Min(4, (int)Math.Log(-baseNoteLength / (amountOfFullNotes - 2 * baseNoteLength), 2));
+
+
             Length length = new Length
             {
                 Denominator = new Denominator(denominator),
