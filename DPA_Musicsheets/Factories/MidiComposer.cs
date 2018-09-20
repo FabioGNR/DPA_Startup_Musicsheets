@@ -1,4 +1,5 @@
-﻿using DPA_Musicsheets.Models.Domain;
+﻿using DPA_Musicsheets.Builders;
+using DPA_Musicsheets.Models.Domain;
 using Sanford.Multimedia.Midi;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace DPA_Musicsheets.Factories
         private decimal currentBarPercentage = 0;
 
         private TimeSignature currentTimeSignature;
-        private Note currentNote = null;
+        private SymbolBuilder currentSymbolBuilder = null;
 
         public MidiComposer(Sequence sequence)
         {
@@ -65,25 +66,17 @@ namespace DPA_Musicsheets.Factories
                 }
                 if (evt.DeltaTicks > 0)
                 {
-                    Length length = CalculateLength(evt.DeltaTicks);
-                    Rest rest = new Rest
-                    {
-                        Length = length
-                    };
+                    SymbolBuilder symbolBuilder = new SymbolBuilder();
+                    symbolBuilder = AddLengthToSymbol(evt.DeltaTicks, symbolBuilder);
+                    Symbol rest = symbolBuilder.Build();
                     composition.Tokens.Add(rest);
-                    CheckForBar(length);
-
+                    CheckForBar(rest.Length);
                 }
-                Pitch pitch = new Pitch();
-                currentNote = new Note
-                {
-                    Pitch = GetPitch(msg.Data1)
-                };
+                AddPitchToSymbol(msg.Data1);
             }
-            else if (currentNote != null)
+            else if (currentSymbolBuilder != null)
             {
                 EndCurrentNote(evt);
-
             }
         }
 
@@ -101,14 +94,14 @@ namespace DPA_Musicsheets.Factories
 
         private void EndCurrentNote(MidiEvent evt)
         {
-            Length length = CalculateLength(evt.DeltaTicks);
-            currentNote.Length = length;
-            composition.Tokens.Add(currentNote);
-            currentNote = null;
-            CheckForBar(length);
+            AddLengthToSymbol(evt.DeltaTicks, currentSymbolBuilder);
+            Symbol note = currentSymbolBuilder.Build();
+            composition.Tokens.Add(note);
+            currentSymbolBuilder = null;
+            CheckForBar(note.Length);
         }
 
-        private Length CalculateLength(int deltaTicks)
+        private SymbolBuilder AddLengthToSymbol(int deltaTicks, SymbolBuilder builder)
         {
             double amountOfBeatNotes = (double)deltaTicks / (double)sequence.Division;
             double amountOfFullNotes = amountOfBeatNotes / currentTimeSignature.Denominator.Value;
@@ -122,18 +115,13 @@ namespace DPA_Musicsheets.Factories
             }
             double baseNoteLength = 1f / denominator;
             int amountOfDots = Math.Min(4, (int)Math.Log(-baseNoteLength / (amountOfFullNotes - 2 * baseNoteLength), 2));
-
-
-            Length length = new Length
-            {
-                Denominator = new Denominator(denominator),
-                AmountOfDots = amountOfDots
-            };
-
-            return length;
+            if (builder == null)
+                builder = new SymbolBuilder();
+            builder.WithLength(denominator, amountOfDots);
+            return builder;
         }
 
-        private Pitch GetPitch(int keyCode)
+        private void AddPitchToSymbol(int keyCode)
         {
             Tone tone = Tone.C;
             Accidental acc = Accidental.None;
@@ -155,12 +143,9 @@ namespace DPA_Musicsheets.Factories
                 }
             }
 
-            return new Pitch
-            {
-                Tone = tone,
-                Accidental = acc,
-                OctaveOffset = GetOctaveOffset(keyCode)
-            };
+            if (currentSymbolBuilder == null)
+                currentSymbolBuilder = new SymbolBuilder();
+            currentSymbolBuilder.WithPitch(tone, acc, GetOctaveOffset(keyCode));
         }
 
         private int GetOctaveOffset(int keyCode)
@@ -189,7 +174,7 @@ namespace DPA_Musicsheets.Factories
                     composition.Tokens.Add(new Tempo(60_000_000 / microSecondsPB));
                     break;
                 case MetaType.EndOfTrack:
-                    if (currentNote != null)
+                    if (currentSymbolBuilder != null)
                     {
                         EndCurrentNote(evt);
                     }
