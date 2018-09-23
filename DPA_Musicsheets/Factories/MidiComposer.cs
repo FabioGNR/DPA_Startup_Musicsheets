@@ -63,19 +63,11 @@ namespace DPA_Musicsheets.Factories
             {
                 if (currentTimeSignature == null)
                 {
-                    Builders.TimeSignatureBuilder timeSignatureBuilder = new Builders.TimeSignatureBuilder();
-                    timeSignatureBuilder.WithCount(4);
-                    timeSignatureBuilder.WithDenominator(4);
-                    currentTimeSignature = timeSignatureBuilder.Build();
-                    composition.Tokens.Add(currentTimeSignature);
+                    AddDefaultTimeSignature();
                 }
                 if (evt.DeltaTicks > 0)
                 {
-                    SymbolBuilder symbolBuilder = new SymbolBuilder();
-                    symbolBuilder = AddLengthToSymbol(evt.DeltaTicks, symbolBuilder);
-                    Symbol rest = symbolBuilder.Build();
-                    composition.Tokens.Add(rest);
-                    CheckForBar(rest.Length);
+                    InsertRest(evt.DeltaTicks);
                 }
                 AddPitchToSymbol(msg.Data1);
             }
@@ -83,6 +75,24 @@ namespace DPA_Musicsheets.Factories
             {
                 EndCurrentNote(evt);
             }
+        }
+
+        private void InsertRest(int deltaTicks)
+        {
+            SymbolBuilder symbolBuilder = new SymbolBuilder();
+            symbolBuilder = AddLengthToSymbol(deltaTicks, symbolBuilder);
+            Symbol rest = symbolBuilder.Build();
+            composition.Tokens.Add(rest);
+            CheckForBar(rest.Length);
+        }
+
+        private void AddDefaultTimeSignature()
+        {
+            Builders.TimeSignatureBuilder timeSignatureBuilder = new Builders.TimeSignatureBuilder();
+            timeSignatureBuilder.WithCount(4);
+            timeSignatureBuilder.WithDenominator(4);
+            currentTimeSignature = timeSignatureBuilder.Build();
+            composition.Tokens.Add(currentTimeSignature);
         }
 
         private void CheckForBar(Length length)
@@ -177,12 +187,13 @@ namespace DPA_Musicsheets.Factories
                     int microSecondsPB = (msgBytes[0] << 16 | msgBytes[1] << 8 | msgBytes[2]);
                     composition.Tokens.Add(new Tempo(60_000_000 / microSecondsPB));
                     break;
-                case MetaType.EndOfTrack:
-                    if (currentSymbolBuilder != null)
-                    {
-                        EndCurrentNote(evt);
-                    }
-                    break;
+                //TODO: this messes up first note's denominator, is it needed at all?
+                //case MetaType.EndOfTrack:
+                //    if (currentSymbolBuilder != null)
+                //    {
+                //        EndCurrentNote(evt);
+                //    }
+                //    break;
             }
         }
 
