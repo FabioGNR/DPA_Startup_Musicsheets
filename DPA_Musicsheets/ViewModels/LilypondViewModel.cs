@@ -84,7 +84,7 @@ namespace DPA_Musicsheets.ViewModels
                         _waitingForRender = false;
                         UndoCommand.RaiseCanExecuteChanged();
 
-                        _musicLoader.LoadLilypondIntoWpfStaffsAndMidi(LilypondText);
+                        //_musicLoader.LoadLilypondIntoWpfStaffsAndMidi(LilypondText);
                         _mainViewModel.CurrentState = "";
                     }
                 }, TaskScheduler.FromCurrentSynchronizationContext()); // Request from main thread.
@@ -117,15 +117,15 @@ namespace DPA_Musicsheets.ViewModels
                 string extension = Path.GetExtension(saveFileDialog.FileName);
                 if (extension.EndsWith(".mid"))
                 {
-                    _musicLoader.SaveToMidi(saveFileDialog.FileName);
+                    //_musicLoader.SaveToMidi(saveFileDialog.FileName);
                 }
                 else if (extension.EndsWith(".ly"))
                 {
-                    _musicLoader.SaveToLilypond(saveFileDialog.FileName);
+                    //_musicLoader.SaveToLilypond(saveFileDialog.FileName);
                 }
                 else if (extension.EndsWith(".pdf"))
                 {
-                    _musicLoader.SaveToPDF(saveFileDialog.FileName);
+                    //_musicLoader.SaveToPDF(saveFileDialog.FileName);
                 }
                 else
                 {
