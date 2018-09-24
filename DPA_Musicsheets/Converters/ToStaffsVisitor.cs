@@ -28,6 +28,7 @@ namespace DPA_Musicsheets.Converters
                     PSAMControlLibrary.NoteBeamType.Single
                 }
             );
+            staffNote.NumberOfDots = note.Length.AmountOfDots;
             _symbols.Add(staffNote);
         }
 
