@@ -54,6 +54,29 @@ namespace DPA_Musicsheets.Factories
             return composition;
         }
 
+        private void ProcessMetaMessage(MidiEvent evt)
+        {
+            MetaMessage msg = evt.MidiMessage as MetaMessage;
+            byte[] msgBytes = msg.GetBytes();
+            switch (msg.MetaType)
+            {
+                case MetaType.TimeSignature:
+                    int count = msgBytes[0];
+                    int denominator = (int)Math.Pow(msgBytes[1], 2);
+                    Builders.TimeSignatureBuilder timeSignatureBuilder = new Builders.TimeSignatureBuilder();
+                    timeSignatureBuilder.WithCount(count);
+                    timeSignatureBuilder.WithDenominator(denominator);
+                    currentTimeSignature = timeSignatureBuilder.Build();
+                    composition.Tokens.Add(currentTimeSignature);
+                    break;
+                case MetaType.Tempo:
+                    int microSecondsPB = (msgBytes[0] << 16 | msgBytes[1] << 8 | msgBytes[2]);
+                    composition.Tokens.Add(new Tempo(60_000_000 / microSecondsPB));
+                    break;
+            }
+        }
+
+
         private void ProcessChannelMessage(MidiEvent evt)
         {
             ChannelMessage msg = evt.MidiMessage as ChannelMessage;
@@ -166,35 +189,6 @@ namespace DPA_Musicsheets.Factories
         private int GetOctaveOffset(int keyCode)
         {
             return (int)Math.Floor((keyCode - CENTRAL_C) / 12f);
-        }
-
-        private void ProcessMetaMessage(MidiEvent evt)
-        {
-            MetaMessage msg = evt.MidiMessage as MetaMessage;
-            byte[] msgBytes = msg.GetBytes();
-            switch (msg.MetaType)
-            {
-                case MetaType.TimeSignature:
-                    int count = msgBytes[0];
-                    int denominator = (int)Math.Pow(msgBytes[1], 2);
-                    Builders.TimeSignatureBuilder timeSignatureBuilder = new Builders.TimeSignatureBuilder();
-                    timeSignatureBuilder.WithCount(count);
-                    timeSignatureBuilder.WithDenominator(denominator);
-                    currentTimeSignature = timeSignatureBuilder.Build();
-                    composition.Tokens.Add(currentTimeSignature);
-                    break;
-                case MetaType.Tempo:
-                    int microSecondsPB = (msgBytes[0] << 16 | msgBytes[1] << 8 | msgBytes[2]);
-                    composition.Tokens.Add(new Tempo(60_000_000 / microSecondsPB));
-                    break;
-                //TODO: this messes up first note's denominator, is it needed at all?
-                //case MetaType.EndOfTrack:
-                //    if (currentSymbolBuilder != null)
-                //    {
-                //        EndCurrentNote(evt);
-                //    }
-                //    break;
-            }
         }
 
         private IEnumerable<MidiEvent> JoinTracks(Sequence sequence)
