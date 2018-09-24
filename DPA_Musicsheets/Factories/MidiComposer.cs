@@ -71,7 +71,8 @@ namespace DPA_Musicsheets.Factories
                     break;
                 case MetaType.Tempo:
                     int microSecondsPB = (msgBytes[0] << 16 | msgBytes[1] << 8 | msgBytes[2]);
-                    composition.Tokens.Add(new Tempo(60_000_000 / microSecondsPB));
+                    int BPM = 60_000_000 / microSecondsPB;
+                    composition.Tokens.Add(new TempoBuilder().WithBPM(BPM).Build());
                     break;
             }
         }
