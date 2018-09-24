@@ -9,19 +9,25 @@ namespace DPA_Musicsheets.Factories
 {
     public static class AbstractCompositionFactory
     {
-        public static ICompositionFactory GetFactory(FileType type)
+        private static readonly Dictionary<string, ICompositionFactory> fileFactories =
+            new Dictionary<string, ICompositionFactory>();
+
+        static AbstractCompositionFactory()
         {
-            switch (type)
+            fileFactories.Add(".mid", new MidiCompositionFactory());
+            fileFactories.Add(".ly", new LilyPondCompositionFactory());
+        }
+
+        public static ICompositionFactory GetFactory(string extension)
+        {
+            if (fileFactories.ContainsKey(extension))
             {
-                case FileType.LilyPond:
-                    return new LilyPondCompositionFactory();
-                case FileType.Midi:
-                    return new MidiCompositionFactory();
-                default:
-                    throw new NotImplementedException($"{type}-support is not yet implemented");
-
+                return fileFactories[extension];
             }
-
+            else
+            {
+                throw new NotSupportedException($"No support for filetype {extension}");
+            }
         }
     }
 }

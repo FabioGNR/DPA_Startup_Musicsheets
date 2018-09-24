@@ -132,10 +132,8 @@
     <Compile Include="Models\Domain\TimeSignature.cs" />
     <Compile Include="Models\Domain\Token.cs" />
     <Compile Include="Models\Domain\Tone.cs" />
-    <Compile Include="Models\FileType.cs" />
     <Compile Include="Models\LilypondToken.cs" />
     <Compile Include="Models\LilypondTokenKind.cs" />
-    <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="ViewModels\MidiPlayerViewModel.cs" />
     <Compile Include="ViewModels\StaffsViewModel.cs" />
     <Compile Include="Views\MidiPlayerCtrl.xaml.cs">

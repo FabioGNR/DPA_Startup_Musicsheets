@@ -2,7 +2,6 @@
 using DPA_Musicsheets.Converters;
 using DPA_Musicsheets.Factories;
 using DPA_Musicsheets.Models;
-using DPA_Musicsheets.Utils;
 using DPA_Musicsheets.ViewModels;
 using PSAMControlLibrary;
 using PSAMWPFControlLibrary;
@@ -51,9 +50,7 @@ namespace DPA_Musicsheets.Managers
         /// <param name="fileName"></param>
         public void OpenFile(string fileName)
         {
-            FileType type = FileUtils.ParseFileType(fileName);
-
-            ICompositionFactory factory = AbstractCompositionFactory.GetFactory(type);
+            ICompositionFactory factory = AbstractCompositionFactory.GetFactory(Path.GetExtension(fileName));
 
             Models.Domain.Composition composition = factory.ReadComposition(fileName);
 
