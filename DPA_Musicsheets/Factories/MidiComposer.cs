@@ -54,6 +54,17 @@ namespace DPA_Musicsheets.Factories
             return composition;
         }
 
+        private IEnumerable<MidiEvent> JoinTracks(Sequence sequence)
+        {
+            IEnumerable<MidiEvent> events = new List<MidiEvent>();
+            for (int i = 0; i < Math.Min(2, sequence.Count); i++)
+            {
+                events = events.Concat(sequence[i].Iterator());
+            }
+            // sort based on time
+            return events.OrderBy(evt => evt.AbsoluteTicks).ThenByDescending(evt => evt.DeltaTicks);
+        }
+
         private void ProcessMetaMessage(MidiEvent evt)
         {
             MetaMessage msg = evt.MidiMessage as MetaMessage;
@@ -76,7 +87,6 @@ namespace DPA_Musicsheets.Factories
                     break;
             }
         }
-
 
         private void ProcessChannelMessage(MidiEvent evt)
         {
@@ -190,17 +200,6 @@ namespace DPA_Musicsheets.Factories
         private int GetOctaveOffset(int keyCode)
         {
             return (int)Math.Floor((keyCode - CENTRAL_C) / 12f);
-        }
-
-        private IEnumerable<MidiEvent> JoinTracks(Sequence sequence)
-        {
-            IEnumerable<MidiEvent> events = new List<MidiEvent>();
-            for (int i = 0; i < Math.Min(2, sequence.Count); i++)
-            {
-                events = events.Concat(sequence[i].Iterator());
-            }
-            // sort based on time
-            return events.OrderBy(evt => evt.AbsoluteTicks).ThenByDescending(evt => evt.DeltaTicks);
         }
     }
 }
