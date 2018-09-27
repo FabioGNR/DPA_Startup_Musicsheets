@@ -108,6 +108,17 @@
     <Compile Include="Builders\TempoBuilder.cs" />
     <Compile Include="Builders\TimeSignatureBuilder.cs" />
     <Compile Include="Converters\ITokenVisitor.cs" />
+    <Compile Include="Converters\Lilypond\ILilypondConverter.cs" />
+    <Compile Include="Converters\Lilypond\LilypondBarlineConverter.cs" />
+    <Compile Include="Converters\Lilypond\LilypondClefConverter.cs" />
+    <Compile Include="Converters\Lilypond\LilypondComposer.cs" />
+    <Compile Include="Converters\Lilypond\LilypondNoteConverter.cs" />
+    <Compile Include="Converters\Lilypond\LilypondRestConverter.cs" />
+    <Compile Include="Converters\Lilypond\LilypondTempoConverter.cs" />
+    <Compile Include="Converters\Lilypond\LilypondTimeSignatureConverter.cs" />
+    <Compile Include="Converters\Lilypond\LilypondToken.cs" />
+    <Compile Include="Converters\Lilypond\LilypondTokenizer.cs" />
+    <Compile Include="Converters\Lilypond\LilypondTokenKind.cs" />
     <Compile Include="Converters\ToMidiVisitor.cs" />
     <Compile Include="Converters\ToStaffsVisitor.cs" />
     <Compile Include="Factories\AbstractCompositionFactory.cs" />
