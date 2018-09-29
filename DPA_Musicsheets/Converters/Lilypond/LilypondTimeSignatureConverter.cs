@@ -5,8 +5,9 @@ namespace DPA_Musicsheets.Converters.Lilypond
 {
     internal class LilypondTimeSignatureConverter : ILilypondTokenConverter
     {
-        public Token Convert(LilypondToken input)
+        public Token Convert(LilypondTokenEnumerator enumerator)
         {
+            enumerator.Next();
             var builder = new TimeSignatureBuilder();
             builder.WithCount(4);
             builder.WithDenominator(4);

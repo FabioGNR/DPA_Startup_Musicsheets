@@ -11,14 +11,16 @@ namespace DPA_Musicsheets.Converters.Lilypond
         private static Regex noteRegex = new Regex(@"(~?)([a-g])(is|es)?([,']*)(\d)(\.*)");
         private int octaveOffset = 0;
 
-        public Token Convert(LilypondToken input)
+        public Token Convert(LilypondTokenEnumerator enumerator)
         {
+            var input = enumerator.Current;
             var match = noteRegex.Match(input.TokenText);
             if (match.Success)
             {
                 SymbolBuilder builder = new SymbolBuilder();
                 bool slur = match.Groups[0].Success;
                 //TODO: add slur to builder
+                //TODO: determine octaveoffset based on last note (closest note)
                 var tone = GetToneFromLetter(match.Groups[2].Value);
                 Accidental accidental = Accidental.None;
                 if (match.Groups[3].Success)

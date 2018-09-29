@@ -43,7 +43,7 @@ namespace DPA_Musicsheets.Converters.Lilypond
 
         private IEnumerable<string> SplitInput(string input)
         {
-            return input.Split(' ', '\n');
+            return input.Split(' ', '\n', '\r');
         }
     }
 }

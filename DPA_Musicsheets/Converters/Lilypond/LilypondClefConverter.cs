@@ -5,10 +5,11 @@ namespace DPA_Musicsheets.Converters.Lilypond
 {
     internal class LilypondClefConverter : ILilypondTokenConverter
     {
-        public Token Convert(LilypondToken input)
+        public Token Convert(LilypondTokenEnumerator enumerator)
         {
+            enumerator.Next();
             ClefBuilder builder = new ClefBuilder();
-            builder.OnBar(4);
+            builder.OnBar(2);
             builder.WithTone(ClefTone.G);
             return builder.Build();
         }

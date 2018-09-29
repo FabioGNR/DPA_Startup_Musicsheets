@@ -9,6 +9,6 @@ namespace DPA_Musicsheets.Converters.Lilypond
 {
     interface ILilypondTokenConverter
     {
-        Token Convert(LilypondToken input);
+        Token Convert(LilypondTokenEnumerator enumerator);
     }
 }

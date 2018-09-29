@@ -9,8 +9,9 @@ namespace DPA_Musicsheets.Converters.Lilypond
     {
         private static Regex regex = new Regex(@"r(\d)(\.*)");
 
-        public Token Convert(LilypondToken input)
+        public Token Convert(LilypondTokenEnumerator enumerator)
         {
+            var input = enumerator.Current;
             var match = regex.Match(input.TokenText);
             if (match.Success)
             {

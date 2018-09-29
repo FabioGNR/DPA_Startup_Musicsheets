@@ -18,27 +18,34 @@ namespace DPA_Musicsheets.Converters.Lilypond
                 {LilypondTokenKind.Note, new LilypondNoteConverter() },
                 {LilypondTokenKind.Rest, new LilypondRestConverter() },
                 {LilypondTokenKind.Tempo, new LilypondTempoConverter() },
-                {LilypondTokenKind.TimeSignature, new LilypondTimeSignatureConverter() }
+                {LilypondTokenKind.TimeSignature, new LilypondTimeSignatureConverter() },
+                {LilypondTokenKind.Relative, new LilypondRelativeConverter() }
             };
 
         public Composition Compose(IEnumerable<LilypondToken> lilypondTokens)
         {
             composition = new Composition();
-            foreach (var lilypondToken in lilypondTokens)
+            var enumerator = new LilypondTokenEnumerator(lilypondTokens);
+            while(enumerator.HasTokensLeft)
             {
-                AddToComposition(lilypondToken);
+                AddToComposition(enumerator);
             }
             return composition;
         }
 
-        private void AddToComposition(LilypondToken input)
+        private void AddToComposition(LilypondTokenEnumerator enumerator)
         {
+            var input = enumerator.Current;
             if (_tokenConverters.ContainsKey(input.Kind))
             {
                 var converter = _tokenConverters[input.Kind];
-                var token = converter.Convert(input);
-                composition.Tokens.Add(token);
+                var token = converter.Convert(enumerator);
+                if (token != null)
+                {
+                    composition.Tokens.Add(token);
+                }
             }
+            enumerator.Next();
         }
     }
 }
