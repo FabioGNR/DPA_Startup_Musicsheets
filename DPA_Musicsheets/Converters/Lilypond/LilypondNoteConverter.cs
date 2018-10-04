@@ -9,7 +9,8 @@ namespace DPA_Musicsheets.Converters.Lilypond
     internal class LilypondNoteConverter : ILilypondTokenConverter
     {
         private static Regex noteRegex = new Regex(@"(~?)([a-g])(is|es)?([,']*)(\d)(\.*)");
-        private int octaveOffset = 0;
+        private int octaveOffset = -1;
+        private Tone? previousNoteTone = null;
 
         public Token Convert(LilypondTokenEnumerator enumerator)
         {
@@ -20,18 +21,21 @@ namespace DPA_Musicsheets.Converters.Lilypond
                 SymbolBuilder builder = new SymbolBuilder();
                 bool slur = match.Groups[0].Success;
                 //TODO: add slur to builder
-                //TODO: determine octaveoffset based on last note (closest note)
                 var tone = GetToneFromLetter(match.Groups[2].Value);
                 Accidental accidental = Accidental.None;
                 if (match.Groups[3].Success)
                 {
                     accidental = match.Groups[3].Value == "cis" ? Accidental.Sharp : Accidental.Flat;
                 }
+                // determine octave
+                MoveToClosestOctaveOffset(tone);
+                previousNoteTone = tone;
                 if (match.Groups[4].Success)
                 {
                     UpdateOctaveOffset(match.Groups[4].Value);
                 }
                 builder.WithPitch(tone, accidental, octaveOffset);
+                // determine length
                 if (int.TryParse(match.Groups[5].Value, out int denominator))
                 {
                     int dots = match.Groups[6].Length;
@@ -42,6 +46,34 @@ namespace DPA_Musicsheets.Converters.Lilypond
             else
             {
                 throw new InvalidOperationException("Not a note that can be read");
+            }
+        }
+
+        /// <summary>
+        /// This method adjusts the octave offset so that the note is closest to the previous
+        /// </summary>
+        /// <param name="newTone"></param>
+        private void MoveToClosestOctaveOffset(Tone newTone)
+        {
+            if (previousNoteTone == null)
+            {
+                return;
+            }
+            int toneValue = (int)newTone;
+            int previousToneValue = (int)previousNoteTone;
+            if (previousToneValue > toneValue)
+            {
+                if (previousToneValue - toneValue > 6)
+                {
+                    octaveOffset++;
+                }
+            }
+            else
+            {
+                if (toneValue - previousToneValue > 6)
+                {
+                    octaveOffset--;
+                }
             }
         }
 
