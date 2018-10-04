@@ -49,12 +49,8 @@ namespace DPA_Musicsheets.Managers
 
         public void LoadCompositionIntoViewModel(Models.Domain.Composition composition)
         {
-            var staffConverter = new ToStaffsVisitor();
-            foreach (var token in composition.Tokens)
-            {
-                token.Accept(staffConverter);
-            }
-            this.StaffsViewModel.SetStaffs(staffConverter.Symbols);
+            this.LilypondViewModel.SetComposition(composition);
+            this.StaffsViewModel.SetComposition(composition);
         }
     }
 }

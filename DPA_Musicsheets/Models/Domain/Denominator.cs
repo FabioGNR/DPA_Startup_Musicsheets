@@ -19,5 +19,10 @@ namespace DPA_Musicsheets.Models.Domain
 
             Value = denominator;
         }
+
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
     }
 }

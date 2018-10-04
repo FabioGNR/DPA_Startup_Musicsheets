@@ -1,4 +1,6 @@
-﻿using DPA_Musicsheets.Managers;
+﻿using DPA_Musicsheets.Factories;
+using DPA_Musicsheets.Managers;
+using DPA_Musicsheets.Models.Domain;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Win32;
@@ -53,11 +55,17 @@ namespace DPA_Musicsheets.ViewModels
             _mainViewModel = mainViewModel;
             _musicLoader = musicLoader;
             _musicLoader.LilypondViewModel = this;
-            
+
             _text = "Your lilypond text will appear here.";
         }
 
-        public void LilypondTextLoaded(string text)
+        public void SetComposition(Composition composition)
+        {
+            var lilypondText = LilypondFactory.GetLilypond(composition);
+            LilypondTextLoaded(lilypondText);
+        }
+
+        private void LilypondTextLoaded(string text)
         {
             _textChangedByLoad = true;
             LilypondText = _previousText = text;

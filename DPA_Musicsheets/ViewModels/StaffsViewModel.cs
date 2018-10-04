@@ -1,4 +1,6 @@
-﻿using DPA_Musicsheets.Managers;
+﻿using DPA_Musicsheets.Converters;
+using DPA_Musicsheets.Managers;
+using DPA_Musicsheets.Models.Domain;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using PSAMControlLibrary;
@@ -32,14 +34,20 @@ namespace DPA_Musicsheets.ViewModels
         }
 
         /// <summary>
-        /// SetStaffs fills the observablecollection with new symbols. 
+        /// SetComposition fills the observablecollection with new symbols. 
         /// We don't want to reset the collection because we don't want other classes to create an observable collection.
         /// </summary>
-        /// <param name="symbols">The new symbols to show.</param>
-        public void SetStaffs(IEnumerable<MusicalSymbol> symbols)
+        /// <param name="composition">The new composition to show.</param>
+        public void SetComposition(Composition composition)
         {
+            var staffConverter = new ToStaffsVisitor();
+            foreach (var token in composition.Tokens)
+            {
+                token.Accept(staffConverter);
+            }
+
             Staffs.Clear();
-            foreach (var symbol in symbols)
+            foreach (var symbol in staffConverter.Symbols)
             {
                 Staffs.Add(symbol);
             }

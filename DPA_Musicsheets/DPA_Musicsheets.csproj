@@ -121,11 +121,13 @@
     <Compile Include="Converters\Lilypond\LilypondTokenEnumerator.cs" />
     <Compile Include="Converters\Lilypond\LilypondTokenizer.cs" />
     <Compile Include="Converters\Lilypond\LilypondTokenKind.cs" />
+    <Compile Include="Converters\ToLilypondVisitor.cs" />
     <Compile Include="Converters\ToMidiVisitor.cs" />
     <Compile Include="Converters\ToStaffsVisitor.cs" />
     <Compile Include="Factories\AbstractCompositionFactory.cs" />
     <Compile Include="Factories\ICompositionFactory.cs" />
     <Compile Include="Factories\LilyPondCompositionFactory.cs" />
+    <Compile Include="Factories\LilypondFactory.cs" />
     <Compile Include="Factories\MidiComposer.cs" />
     <Compile Include="Factories\MidiCompositionFactory.cs" />
     <Compile Include="Factories\StaffBuilder.cs" />
