@@ -44,8 +44,7 @@ namespace DPA_Musicsheets.ViewModels
             // Wanneer de sequence klaar is moeten we alles closen en stoppen.
             _sequencer.PlayingCompleted += (playingSender, playingEvent) =>
             {
-                _sequencer.Stop();
-                _running = false;
+                Stop();
             };
 
             musicLoader.OnCompositionChanged += MusicLoader_OnCompositionChanged;
