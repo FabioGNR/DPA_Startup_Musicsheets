@@ -12,7 +12,7 @@ namespace DPA_Musicsheets.Converters.Lilypond
         private readonly Dictionary<Regex, LilypondTokenKind>
             _tokenLookup = new Dictionary<Regex, LilypondTokenKind>
             {
-                {new Regex(@"~?[a-g][,']*\d\.*"), LilypondTokenKind.Note },
+                {new Regex(@"(~?)([a-g])(is|es)?([,']*)(\d+)(\.*)"), LilypondTokenKind.Note },
                 {new Regex(@"r\d"), LilypondTokenKind.Rest },
                 {new Regex(@"\\clef"), LilypondTokenKind.Clef },
                 {new Regex(@"\\time"), LilypondTokenKind.TimeSignature },
