@@ -8,9 +8,9 @@ using Sanford.Multimedia.Midi;
 
 namespace DPA_Musicsheets.Factories
 {
-    class MidiCompositionFactory : ICompositionFactory
+    class MidiCompositionFactory : BaseCompositionFactory
     {
-        public Composition ReadComposition(string fileName)
+        protected override Composition CreateComposition(string fileName)
         {
             var midiSequence = new Sequence();
             midiSequence.Load(fileName);
