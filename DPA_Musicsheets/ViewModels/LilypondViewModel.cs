@@ -73,7 +73,7 @@ namespace DPA_Musicsheets.ViewModels
         {
             Application.Current.Dispatcher.BeginInvoke(
                 new Action(() =>
-                    _musicLoader.SetComposition(new LilyPondCompositionFactory().ToComposition(LilypondText))));
+                    _musicLoader.SetComposition(new LilypondCompositionFactory().ReadComposition(LilypondText))));
         }
 
         public void SetComposition(Composition composition)

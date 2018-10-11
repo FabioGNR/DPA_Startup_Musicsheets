@@ -1,4 +1,5 @@
-﻿using DPA_Musicsheets.Managers;
+﻿using DPA_Musicsheets.Converters;
+using DPA_Musicsheets.Managers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using Sanford.Multimedia.Midi;
@@ -52,7 +53,15 @@ namespace DPA_Musicsheets.ViewModels
 
         private void MusicLoader_OnCompositionChanged(object sender, Models.Domain.Composition composition)
         {
-            //TODO: convert composition to midi and load into player
+            var visitor = new ToMidiVisitor();
+            foreach (var token in composition.Tokens)
+            {
+                token.Accept(visitor);
+            }
+            // reset sequencer with new sequence
+            _sequencer.Stop();
+            _sequencer.Position = 0;
+            _sequencer.Sequence = visitor.Sequence;
         }
 
         private void UpdateButtons()

@@ -11,10 +11,6 @@ namespace DPA_Musicsheets.Factories
 {
     public class MidiComposer
     {
-
-        private const int CENTRAL_C = 60;
-        private const int TONES_IN_OCTAVE = 12;
-
         private readonly Sequence sequence;
         private readonly IEnumerable<MidiEvent> events;
         private readonly Composition composition = new Composition();
@@ -160,7 +156,7 @@ namespace DPA_Musicsheets.Factories
             Tone tone = Tone.C;
             Accidental acc = Accidental.None;
 
-            int toneNumber = keyCode % TONES_IN_OCTAVE;
+            int toneNumber = keyCode % Constants.TONES_IN_OCTAVE;
 
             var values = Enum.GetValues(typeof(Tone)).Cast<int>();
             for (int i = 0; i <= toneNumber; i++)
@@ -184,7 +180,7 @@ namespace DPA_Musicsheets.Factories
 
         private int GetOctaveOffset(int keyCode)
         {
-            return (int)Math.Floor((keyCode - CENTRAL_C) / 12f);
+            return (int)Math.Floor((keyCode - Constants.MIDI.CENTRAL_C) / (float)Constants.TONES_IN_OCTAVE);
         }
     }
 }
