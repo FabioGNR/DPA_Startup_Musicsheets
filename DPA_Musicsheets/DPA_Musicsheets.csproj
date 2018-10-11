@@ -127,6 +127,14 @@
     <Compile Include="Converters\ToLilypondVisitor.cs" />
     <Compile Include="Converters\ToMidiVisitor.cs" />
     <Compile Include="Converters\ToStaffsVisitor.cs" />
+    <Compile Include="Editor\State\BaseEditorState.cs" />
+    <Compile Include="Editor\State\Decorators\UnsavedEditorStateDecorator.cs" />
+    <Compile Include="Editor\State\Editor.cs" />
+    <Compile Include="Editor\State\GeneratingEditorState.cs" />
+    <Compile Include="Editor\State\IdleEditorState.cs" />
+    <Compile Include="Editor\State\IEditorStatable.cs" />
+    <Compile Include="Editor\State\IEditorState.cs" />
+    <Compile Include="Editor\State\TypingEditorState.cs" />
     <Compile Include="Factories\AbstractCompositionFactory.cs" />
     <Compile Include="Factories\BaseCompositionFactory.cs" />
     <Compile Include="Factories\ICompositionFactory.cs" />

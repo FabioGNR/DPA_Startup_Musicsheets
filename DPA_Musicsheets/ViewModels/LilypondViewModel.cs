@@ -1,4 +1,5 @@
-﻿using DPA_Musicsheets.Factories;
+﻿using DPA_Musicsheets.Editor.State;
+using DPA_Musicsheets.Factories;
 using DPA_Musicsheets.Managers;
 using DPA_Musicsheets.Models.Domain;
 using GalaSoft.MvvmLight;
@@ -21,6 +22,7 @@ namespace DPA_Musicsheets.ViewModels
         private string _text;
         private string _previousText;
         private string _nextText;
+        private Editor.Editor context;
 
         /// <summary>
         /// This text will be in the textbox.
@@ -57,6 +59,8 @@ namespace DPA_Musicsheets.ViewModels
             _musicLoader.LilypondViewModel = this;
 
             _text = "Your lilypond text will appear here.";
+
+            context.SetState(new IdleEditorState(context));
         }
 
         public void SetComposition(Composition composition)
@@ -77,26 +81,7 @@ namespace DPA_Musicsheets.ViewModels
         /// </summary>
         public ICommand TextChangedCommand => new RelayCommand<TextChangedEventArgs>((args) =>
         {
-            // If we were typing, we need to do things.
-            if (!_textChangedByLoad)
-            {
-                _waitingForRender = true;
-                _lastChange = DateTime.Now;
-
-                _mainViewModel.CurrentState = "Rendering...";
-
-                Task.Delay(MILLISECONDS_BEFORE_CHANGE_HANDLED).ContinueWith((task) =>
-                {
-                    if ((DateTime.Now - _lastChange).TotalMilliseconds >= MILLISECONDS_BEFORE_CHANGE_HANDLED)
-                    {
-                        _waitingForRender = false;
-                        UndoCommand.RaiseCanExecuteChanged();
-
-                        //_musicLoader.LoadLilypondIntoWpfStaffsAndMidi(LilypondText);
-                        _mainViewModel.CurrentState = "";
-                    }
-                }, TaskScheduler.FromCurrentSynchronizationContext()); // Request from main thread.
-            }
+            context.TextChanged();
         });
 
         #region Commands for buttons like Undo, Redo and SaveAs
