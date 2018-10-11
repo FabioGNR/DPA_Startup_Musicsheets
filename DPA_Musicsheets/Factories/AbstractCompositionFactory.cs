@@ -15,7 +15,7 @@ namespace DPA_Musicsheets.Factories
         static AbstractCompositionFactory()
         {
             fileFactories.Add(".mid", new MidiCompositionFactory());
-            fileFactories.Add(".ly", new LilyPondCompositionFactory());
+            fileFactories.Add(".ly", new LilypondFileCompositionFactory());
         }
 
         public static ICompositionFactory GetFactory(string extension)

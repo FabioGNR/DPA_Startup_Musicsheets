@@ -1,4 +1,5 @@
-﻿using DPA_Musicsheets.Managers;
+﻿using DPA_Musicsheets.Converters;
+using DPA_Musicsheets.Managers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using Sanford.Multimedia.Midi;
@@ -43,8 +44,7 @@ namespace DPA_Musicsheets.ViewModels
             // Wanneer de sequence klaar is moeten we alles closen en stoppen.
             _sequencer.PlayingCompleted += (playingSender, playingEvent) =>
             {
-                _sequencer.Stop();
-                _running = false;
+                Stop();
             };
 
             musicLoader.OnCompositionChanged += MusicLoader_OnCompositionChanged;
@@ -52,7 +52,14 @@ namespace DPA_Musicsheets.ViewModels
 
         private void MusicLoader_OnCompositionChanged(object sender, Models.Domain.Composition composition)
         {
-            //TODO: convert composition to midi and load into player
+            var visitor = new ToMidiVisitor();
+            foreach (var token in composition.Tokens)
+            {
+                token.Accept(visitor);
+            }
+            // reset sequencer with new sequence
+            Stop();
+            _sequencer.Sequence = visitor.Sequence;
         }
 
         private void UpdateButtons()
@@ -81,6 +88,14 @@ namespace DPA_Musicsheets.ViewModels
             }
         }
 
+        private void Stop()
+        {
+            _running = false;
+            _sequencer.Stop();
+            _sequencer.Position = 0;
+            UpdateButtons();
+        }
+
         #region buttons for play, stop, pause
         public RelayCommand PlayCommand => new RelayCommand(() =>
         {
@@ -94,10 +109,7 @@ namespace DPA_Musicsheets.ViewModels
 
         public RelayCommand StopCommand => new RelayCommand(() =>
         {
-            _running = false;
-            _sequencer.Stop();
-            _sequencer.Position = 0;
-            UpdateButtons();
+            Stop();
         }, () => _running);
 
         public RelayCommand PauseCommand => new RelayCommand(() =>

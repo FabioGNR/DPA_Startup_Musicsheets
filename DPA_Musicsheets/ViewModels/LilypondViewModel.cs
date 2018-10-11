@@ -20,7 +20,6 @@ namespace DPA_Musicsheets.ViewModels
     public class LilypondViewModel : ViewModelBase, IEditor
     {
         private MusicLoader _musicLoader;
-        private StaffsViewModel _staffsViewModel { get; set; }
 
         private string _text;
         private string _previousText;
@@ -51,13 +50,10 @@ namespace DPA_Musicsheets.ViewModels
         }
 
         private bool _textChangedByLoad = false;
-        private DateTime _lastChange;
-        private static int MILLISECONDS_BEFORE_CHANGE_HANDLED = 1500;
         private bool _waitingForRender = false;
 
-        public LilypondViewModel(StaffsViewModel staffsViewModel, MusicLoader musicLoader)
+        public LilypondViewModel(MusicLoader musicLoader)
         {
-            _staffsViewModel = staffsViewModel;
             musicLoader.OnCompositionChanged += MusicLoader_OnCompositionChanged;
             _musicLoader = musicLoader;
 
@@ -88,7 +84,10 @@ namespace DPA_Musicsheets.ViewModels
         /// </summary>
         public ICommand TextChangedCommand => new RelayCommand<TextChangedEventArgs>((args) =>
         {
-            currentState.TextChanged();
+            if (!_textChangedByLoad)
+            {
+                currentState.TextChanged();
+            }
         });
 
         public void SetState(IEditorState state)
@@ -100,9 +99,9 @@ namespace DPA_Musicsheets.ViewModels
         {
             Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    Composition composition = new LilyPondCompositionFactory().ToComposition(LilypondText);
+                    Composition composition = new LilypondCompositionFactory().ReadComposition(LilypondText);
                     careTaker.Save(new CompositionMemento(composition));
-                    _staffsViewModel.SetComposition(composition);
+                    _musicLoader.SetComposition(composition);
                 }));
         }
 
