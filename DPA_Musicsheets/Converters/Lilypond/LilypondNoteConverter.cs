@@ -8,7 +8,7 @@ namespace DPA_Musicsheets.Converters.Lilypond
 {
     internal class LilypondNoteConverter : ILilypondTokenConverter
     {
-        private static Regex noteRegex = new Regex(@"(~?)([a-g])(is|es)?([,']*)(\d)(\.*)");
+        private static Regex noteRegex = new Regex(@"(~?)([a-g])(is|es)?([,']*)(\d+)(\.*)");
         private int octaveOffset = 0;
         private Tone? previousNoteTone = null;
 
