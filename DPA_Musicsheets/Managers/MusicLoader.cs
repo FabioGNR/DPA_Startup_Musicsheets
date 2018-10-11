@@ -38,10 +38,10 @@ namespace DPA_Musicsheets.Managers
 
             Composition composition = factory.ReadComposition(fileName);
 
-            LoadCompositionIntoViewModel(composition);
+            SetComposition(composition);
         }
 
-        public void LoadCompositionIntoViewModel(Models.Domain.Composition composition)
+        public void SetComposition(Models.Domain.Composition composition)
         {
             OnCompositionChanged?.Invoke(this, composition);
         }

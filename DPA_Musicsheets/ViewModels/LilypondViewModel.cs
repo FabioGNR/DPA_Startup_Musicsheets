@@ -71,8 +71,9 @@ namespace DPA_Musicsheets.ViewModels
 
         private void Context_RenderTriggered()
         {
-            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                _staffsViewModel.SetComposition(new LilyPondCompositionFactory().ToComposition(LilypondText))));
+            Application.Current.Dispatcher.BeginInvoke(
+                new Action(() =>
+                    _musicLoader.SetComposition(new LilyPondCompositionFactory().ToComposition(LilypondText))));
         }
 
         public void SetComposition(Composition composition)
@@ -93,7 +94,10 @@ namespace DPA_Musicsheets.ViewModels
         /// </summary>
         public ICommand TextChangedCommand => new RelayCommand<TextChangedEventArgs>((args) =>
         {
-            context.TextChanged();
+            if (!_textChangedByLoad)
+            {
+                context.TextChanged();
+            }
         });
 
         #region Commands for buttons like Undo, Redo and SaveAs
