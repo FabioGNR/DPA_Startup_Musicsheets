@@ -129,7 +129,6 @@
     <Compile Include="Converters\ToStaffsVisitor.cs" />
     <Compile Include="Editor\State\BaseEditorState.cs" />
     <Compile Include="Editor\Editor.cs" />
-    <Compile Include="Editor\State\GeneratingEditorState.cs" />
     <Compile Include="Editor\State\IdleEditorState.cs" />
     <Compile Include="Editor\State\IEditor.cs" />
     <Compile Include="Editor\State\IEditorState.cs" />

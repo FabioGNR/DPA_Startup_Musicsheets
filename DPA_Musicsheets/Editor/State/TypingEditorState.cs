@@ -9,19 +9,19 @@ namespace DPA_Musicsheets.Editor.State
 {
     class TypingEditorState : BaseEditorState
     {
-
         Timer idleTimer;
         public TypingEditorState(IEditor context) : base(context)
         {
             idleTimer = new Timer(1500);
             idleTimer.AutoReset = false;
             idleTimer.Elapsed += IdleTimer_Elapsed;
+            idleTimer.Start();
         }
 
         private void IdleTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            IEditorState next = new GeneratingEditorState(context);
-            context.SetState(next);
+            context.Render();
+            context.SetState(new IdleEditorState(context));
         }
 
         public override void TextChanged()

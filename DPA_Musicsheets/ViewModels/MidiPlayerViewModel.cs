@@ -47,8 +47,12 @@ namespace DPA_Musicsheets.ViewModels
                 _running = false;
             };
 
-            // TODO: Can we use some sort of eventing system so the managers layer doesn't have to know the viewmodel layer?
-            musicLoader.MidiPlayerViewModel = this;
+            musicLoader.OnCompositionChanged += MusicLoader_OnCompositionChanged;
+        }
+
+        private void MusicLoader_OnCompositionChanged(object sender, Models.Domain.Composition composition)
+        {
+            //TODO: convert composition to midi and load into player
         }
 
         private void UpdateButtons()

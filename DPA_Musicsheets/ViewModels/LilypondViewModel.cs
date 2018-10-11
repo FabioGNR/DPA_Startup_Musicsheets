@@ -7,17 +7,19 @@ using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Win32;
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using TriggerRenderHandler = DPA_Musicsheets.Managers.MusicLoader.TriggerRenderHandler;
 
 namespace DPA_Musicsheets.ViewModels
 {
     public class LilypondViewModel : ViewModelBase
     {
         private MusicLoader _musicLoader;
-        private MainViewModel _mainViewModel { get; set; }
+        private StaffsViewModel _staffsViewModel { get; set; }
 
         private string _text;
         private string _previousText;
@@ -50,17 +52,27 @@ namespace DPA_Musicsheets.ViewModels
         private static int MILLISECONDS_BEFORE_CHANGE_HANDLED = 1500;
         private bool _waitingForRender = false;
 
-        public LilypondViewModel(MainViewModel mainViewModel, MusicLoader musicLoader)
+        public LilypondViewModel(StaffsViewModel staffsViewModel, MusicLoader musicLoader)
         {
-            // TODO: Can we use some sort of eventing system so the managers layer doesn't have to know the viewmodel layer and viewmodels don't know each other?
-            // And viewmodels don't 
-            _mainViewModel = mainViewModel;
+            _staffsViewModel = staffsViewModel;
+            musicLoader.OnCompositionChanged += MusicLoader_OnCompositionChanged;
             _musicLoader = musicLoader;
-            _musicLoader.LilypondViewModel = this;
 
             _text = "Your lilypond text will appear here.";
-
+            context = new Editor.Editor();
+            context.RenderTriggered += Context_RenderTriggered;
             context.SetState(new IdleEditorState(context));
+        }
+
+        private void MusicLoader_OnCompositionChanged(object sender, Composition composition)
+        {
+            SetComposition(composition);
+        }
+
+        private void Context_RenderTriggered()
+        {
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                _staffsViewModel.SetComposition(new LilyPondCompositionFactory().ToComposition(LilypondText))));
         }
 
         public void SetComposition(Composition composition)

@@ -28,9 +28,13 @@ namespace DPA_Musicsheets.ViewModels
         /// <param name="musicLoader">We need the musicloader so it can set our staffs.</param>
         public StaffsViewModel(MusicLoader musicLoader)
         {
-            // TODO: Can we use some sort of eventing system so the managers layer doesn't have to know the viewmodel layer?
-            musicLoader.StaffsViewModel = this;
+            musicLoader.OnCompositionChanged += MusicLoader_OnCompositionChanged;
             Staffs = new ObservableCollection<MusicalSymbol>();
+        }
+
+        private void MusicLoader_OnCompositionChanged(object sender, Composition composition)
+        {
+            SetComposition(composition);
         }
 
         /// <summary>
@@ -45,11 +49,17 @@ namespace DPA_Musicsheets.ViewModels
             {
                 token.Accept(staffConverter);
             }
-
-            Staffs.Clear();
-            foreach (var symbol in staffConverter.Symbols)
+            try
             {
-                Staffs.Add(symbol);
+                Staffs.Clear();
+                foreach (var symbol in staffConverter.Symbols)
+                {
+                    Staffs.Add(symbol);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
     }

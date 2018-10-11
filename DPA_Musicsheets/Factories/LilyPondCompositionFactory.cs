@@ -14,8 +14,13 @@ namespace DPA_Musicsheets.Factories
         protected override Composition CreateComposition(string fileName)
         {
             string lilypondString = File.ReadAllText(fileName);
+            return ToComposition(lilypondString);
+        }
+
+        public Composition ToComposition(string lilypondText)
+        {
             var tokenizer = new LilypondTokenizer();
-            var lilypondTokens = tokenizer.Read(lilypondString);
+            var lilypondTokens = tokenizer.Read(lilypondText);
             var composer = new LilypondComposer();
             var composition = composer.Compose(lilypondTokens);
             return composition;
