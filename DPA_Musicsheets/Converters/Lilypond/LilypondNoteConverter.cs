@@ -62,19 +62,13 @@ namespace DPA_Musicsheets.Converters.Lilypond
             }
             int toneValue = (int)newTone;
             int previousToneValue = (int)previousNoteTone;
-            if (previousToneValue > toneValue)
+            if (previousToneValue > toneValue && previousToneValue - toneValue > 6)
             {
-                if (previousToneValue - toneValue > 6)
-                {
-                    octaveOffset++;
-                }
+                octaveOffset++;
             }
-            else
+            else if (toneValue - previousToneValue > 6)
             {
-                if (toneValue - previousToneValue > 6)
-                {
-                    octaveOffset--;
-                }
+                octaveOffset--;
             }
         }
 

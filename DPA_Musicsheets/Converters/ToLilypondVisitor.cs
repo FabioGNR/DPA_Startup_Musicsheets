@@ -22,7 +22,17 @@ namespace DPA_Musicsheets.Converters
             if (lastNote != null)
             {
                 // relative offset
-                octaveOffset = lastNote.Pitch.OctaveOffset - octaveOffset;
+                octaveOffset = octaveOffset - lastNote.Pitch.OctaveOffset;
+                int toneValue = (int)note.Pitch.Tone;
+                int previousToneValue = (int)lastNote.Pitch.Tone;
+                if (previousToneValue > toneValue && previousToneValue - toneValue > 6)
+                {
+                    octaveOffset--;
+                }
+                else if (toneValue - previousToneValue > 6)
+                {
+                    octaveOffset++;
+                }
             }
             lilypondText.Append(note.Pitch.Tone.ToString().ToLower());
             if (note.Pitch.Accidental != Accidental.None)
@@ -30,6 +40,7 @@ namespace DPA_Musicsheets.Converters
                 lilypondText.Append(note.Pitch.Accidental == Accidental.Sharp ? "is" : "es");
             }
             AppendOctaveOffset(octaveOffset);
+
             AppendLength(note.Length);
             lilypondText.Append(' ');
             lastNote = note;
@@ -94,7 +105,7 @@ namespace DPA_Musicsheets.Converters
             {
                 lilypondText.Append('\'', octaveOffset);
             }
-            else
+            else if (octaveOffset < 0)
             {
                 lilypondText.Append(',', -octaveOffset);
             }
