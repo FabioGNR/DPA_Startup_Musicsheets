@@ -59,8 +59,7 @@ namespace DPA_Musicsheets.ViewModels
                 token.Accept(visitor);
             }
             // reset sequencer with new sequence
-            _sequencer.Stop();
-            _sequencer.Position = 0;
+            Stop();
             _sequencer.Sequence = visitor.Sequence;
         }
 
@@ -90,6 +89,14 @@ namespace DPA_Musicsheets.ViewModels
             }
         }
 
+        private void Stop()
+        {
+            _running = false;
+            _sequencer.Stop();
+            _sequencer.Position = 0;
+            UpdateButtons();
+        }
+
         #region buttons for play, stop, pause
         public RelayCommand PlayCommand => new RelayCommand(() =>
         {
@@ -103,10 +110,7 @@ namespace DPA_Musicsheets.ViewModels
 
         public RelayCommand StopCommand => new RelayCommand(() =>
         {
-            _running = false;
-            _sequencer.Stop();
-            _sequencer.Position = 0;
-            UpdateButtons();
+            Stop();
         }, () => _running);
 
         public RelayCommand PauseCommand => new RelayCommand(() =>
