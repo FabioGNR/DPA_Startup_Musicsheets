@@ -9,7 +9,6 @@ namespace DPA_Musicsheets.Editor.State
 {
     interface IEditor
     {
-        event TriggerRenderHandler RenderTriggered;
         void SetState(IEditorState state);
         void Render();
     }

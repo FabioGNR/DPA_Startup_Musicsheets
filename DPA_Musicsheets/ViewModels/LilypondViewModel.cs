@@ -1,4 +1,5 @@
-﻿using DPA_Musicsheets.Editor.State;
+﻿using DPA_Musicsheets.Editor.Memento;
+using DPA_Musicsheets.Editor.State;
 using DPA_Musicsheets.Factories;
 using DPA_Musicsheets.Managers;
 using DPA_Musicsheets.Models.Domain;
@@ -16,7 +17,7 @@ using TriggerRenderHandler = DPA_Musicsheets.Managers.MusicLoader.TriggerRenderH
 
 namespace DPA_Musicsheets.ViewModels
 {
-    public class LilypondViewModel : ViewModelBase
+    public class LilypondViewModel : ViewModelBase, IEditor
     {
         private MusicLoader _musicLoader;
         private StaffsViewModel _staffsViewModel { get; set; }
@@ -24,7 +25,9 @@ namespace DPA_Musicsheets.ViewModels
         private string _text;
         private string _previousText;
         private string _nextText;
-        private Editor.Editor context;
+
+        private IEditorState currentState;
+        EditorCaretaker careTaker = new EditorCaretaker();
 
         /// <summary>
         /// This text will be in the textbox.
@@ -59,20 +62,12 @@ namespace DPA_Musicsheets.ViewModels
             _musicLoader = musicLoader;
 
             _text = "Your lilypond text will appear here.";
-            context = new Editor.Editor();
-            context.RenderTriggered += Context_RenderTriggered;
-            context.SetState(new IdleEditorState(context));
+            SetState(new IdleEditorState(this));
         }
 
         private void MusicLoader_OnCompositionChanged(object sender, Composition composition)
         {
             SetComposition(composition);
-        }
-
-        private void Context_RenderTriggered()
-        {
-            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                _staffsViewModel.SetComposition(new LilyPondCompositionFactory().ToComposition(LilypondText))));
         }
 
         public void SetComposition(Composition composition)
@@ -93,15 +88,28 @@ namespace DPA_Musicsheets.ViewModels
         /// </summary>
         public ICommand TextChangedCommand => new RelayCommand<TextChangedEventArgs>((args) =>
         {
-            context.TextChanged();
+            currentState.TextChanged();
         });
+
+        public void SetState(IEditorState state)
+        {
+            currentState = state;
+        }
+
+        public void Render()
+        {
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    Composition composition = new LilyPondCompositionFactory().ToComposition(LilypondText);
+                    careTaker.Save(new CompositionMemento(composition));
+                    _staffsViewModel.SetComposition(composition);
+                }));
+        }
 
         #region Commands for buttons like Undo, Redo and SaveAs
         public RelayCommand UndoCommand => new RelayCommand(() =>
         {
-            _nextText = LilypondText;
-            LilypondText = _previousText;
-            _previousText = null;
+
         }, () => _previousText != null && _previousText != LilypondText);
 
         public RelayCommand RedoCommand => new RelayCommand(() =>

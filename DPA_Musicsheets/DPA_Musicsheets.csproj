@@ -127,8 +127,10 @@
     <Compile Include="Converters\ToLilypondVisitor.cs" />
     <Compile Include="Converters\ToMidiVisitor.cs" />
     <Compile Include="Converters\ToStaffsVisitor.cs" />
+    <Compile Include="Editor\Memento\EditorCaretaker.cs" />
+    <Compile Include="Editor\Memento\CompositionMemento.cs" />
+    <Compile Include="Editor\Memento\LinkedListExtensions.cs" />
     <Compile Include="Editor\State\BaseEditorState.cs" />
-    <Compile Include="Editor\Editor.cs" />
     <Compile Include="Editor\State\IdleEditorState.cs" />
     <Compile Include="Editor\State\IEditor.cs" />
     <Compile Include="Editor\State\IEditorState.cs" />

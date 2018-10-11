@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DPA_Musicsheets.Editor.State
 {
-    interface IEditorState
+    public interface IEditorState
     {
         void Close();
         void TextChanged();

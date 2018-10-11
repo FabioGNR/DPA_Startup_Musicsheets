@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DPA_Musicsheets.Editor.Memento;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,13 @@ namespace DPA_Musicsheets.Models.Domain
         public Composition()
         {
             Tokens = new List<Token>();
+        }
+
+        public void Restore(CompositionMemento mem)
+        {
+            Tokens = mem.Tokens;
+            FileName = mem.FileName;
+            Title = mem.Title;
         }
     }
 }
