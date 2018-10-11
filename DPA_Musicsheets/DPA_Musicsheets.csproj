@@ -143,7 +143,6 @@
     <Compile Include="Factories\MidiComposer.cs" />
     <Compile Include="Factories\MidiCompositionFactory.cs" />
     <Compile Include="Factories\StaffBuilder.cs" />
-    <Compile Include="Managers\MidiToLilyHelper.cs" />
     <Compile Include="Managers\MusicLoader.cs" />
     <Compile Include="Models\Domain\Accidental.cs" />
     <Compile Include="Models\Domain\BarLine.cs" />
