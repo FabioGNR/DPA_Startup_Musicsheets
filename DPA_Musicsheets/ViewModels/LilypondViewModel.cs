@@ -48,8 +48,6 @@ namespace DPA_Musicsheets.ViewModels
         }
 
         private bool _textChangedByLoad = false;
-        private DateTime _lastChange;
-        private static int MILLISECONDS_BEFORE_CHANGE_HANDLED = 1500;
         private bool _waitingForRender = false;
 
         public LilypondViewModel(StaffsViewModel staffsViewModel, MusicLoader musicLoader)
