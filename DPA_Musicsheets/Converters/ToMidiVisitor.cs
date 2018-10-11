@@ -61,12 +61,12 @@ namespace DPA_Musicsheets.Converters
 
         public void ProcessToken(Clef clef)
         {
-            throw new NotImplementedException();
+            // do nothing
         }
 
         public void ProcessToken(Token any)
         {
-            throw new NotImplementedException();
+            // do nothing
         }
 
         private int GetTicksForLength(Length length)

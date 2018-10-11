@@ -7,10 +7,14 @@ namespace DPA_Musicsheets.Converters.Lilypond
     {
         public Token Convert(LilypondTokenEnumerator enumerator)
         {
-            enumerator.Next();
+            var signature = enumerator.Next();
+            string[] parts = signature.TokenText.Split('/');
             var builder = new TimeSignatureBuilder();
-            builder.WithCount(4);
-            builder.WithDenominator(4);
+            if (int.TryParse(parts[0], out int count) && int.TryParse(parts[1], out int denominator))
+            {
+                builder.WithCount(count);
+                builder.WithDenominator(denominator);
+            }
             return builder.Build();
         }
     }

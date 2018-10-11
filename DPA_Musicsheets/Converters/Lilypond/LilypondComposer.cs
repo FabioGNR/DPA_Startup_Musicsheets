@@ -26,10 +26,11 @@ namespace DPA_Musicsheets.Converters.Lilypond
         {
             composition = new Composition();
             var enumerator = new LilypondTokenEnumerator(lilypondTokens);
-            while(enumerator.HasTokensLeft)
+            while (enumerator.HasTokensLeft)
             {
                 AddToComposition(enumerator);
             }
+
             return composition;
         }
 

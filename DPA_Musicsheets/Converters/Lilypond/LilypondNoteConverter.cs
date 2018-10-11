@@ -9,7 +9,7 @@ namespace DPA_Musicsheets.Converters.Lilypond
     internal class LilypondNoteConverter : ILilypondTokenConverter
     {
         private static Regex noteRegex = new Regex(@"(~?)([a-g])(is|es)?([,']*)(\d)(\.*)");
-        private int octaveOffset = -1;
+        private int octaveOffset = 0;
         private Tone? previousNoteTone = null;
 
         public Token Convert(LilypondTokenEnumerator enumerator)
@@ -25,7 +25,7 @@ namespace DPA_Musicsheets.Converters.Lilypond
                 Accidental accidental = Accidental.None;
                 if (match.Groups[3].Success)
                 {
-                    accidental = match.Groups[3].Value == "cis" ? Accidental.Sharp : Accidental.Flat;
+                    accidental = match.Groups[3].Value == "is" ? Accidental.Sharp : Accidental.Flat;
                 }
                 // determine octave
                 MoveToClosestOctaveOffset(tone);
@@ -34,6 +34,7 @@ namespace DPA_Musicsheets.Converters.Lilypond
                 {
                     UpdateOctaveOffset(match.Groups[4].Value);
                 }
+                // set pitch
                 builder.WithPitch(tone, accidental, octaveOffset);
                 // determine length
                 if (int.TryParse(match.Groups[5].Value, out int denominator))
