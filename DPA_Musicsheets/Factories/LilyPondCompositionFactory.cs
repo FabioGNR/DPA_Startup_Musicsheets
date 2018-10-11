@@ -9,9 +9,9 @@ using DPA_Musicsheets.Models.Domain;
 
 namespace DPA_Musicsheets.Factories
 {
-    class LilyPondCompositionFactory : ICompositionFactory
+    class LilyPondCompositionFactory : BaseCompositionFactory
     {
-        public Composition ReadComposition(string fileName)
+        protected override Composition CreateComposition(string fileName)
         {
             string lilypondString = File.ReadAllText(fileName);
             var tokenizer = new LilypondTokenizer();

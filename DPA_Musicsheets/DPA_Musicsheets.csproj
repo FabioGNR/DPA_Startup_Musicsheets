@@ -107,6 +107,9 @@
     <Compile Include="Builders\SymbolBuilder.cs" />
     <Compile Include="Builders\TempoBuilder.cs" />
     <Compile Include="Builders\TimeSignatureBuilder.cs" />
+    <Compile Include="Converters\BaseCompositionHandler.cs" />
+    <Compile Include="Converters\ICompositionHandlerChain.cs" />
+    <Compile Include="Converters\InsertBarCompositionHandler.cs" />
     <Compile Include="Converters\ITokenVisitor.cs" />
     <Compile Include="Converters\Lilypond\ILilypondTokenConverter.cs" />
     <Compile Include="Converters\Lilypond\LilypondBarlineConverter.cs" />
@@ -125,6 +128,7 @@
     <Compile Include="Converters\ToMidiVisitor.cs" />
     <Compile Include="Converters\ToStaffsVisitor.cs" />
     <Compile Include="Factories\AbstractCompositionFactory.cs" />
+    <Compile Include="Factories\BaseCompositionFactory.cs" />
     <Compile Include="Factories\ICompositionFactory.cs" />
     <Compile Include="Factories\LilyPondCompositionFactory.cs" />
     <Compile Include="Factories\LilypondFactory.cs" />

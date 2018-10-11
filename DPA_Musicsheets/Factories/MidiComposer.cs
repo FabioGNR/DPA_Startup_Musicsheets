@@ -18,7 +18,6 @@ namespace DPA_Musicsheets.Factories
         private readonly Sequence sequence;
         private readonly IEnumerable<MidiEvent> events;
         private readonly Composition composition = new Composition();
-        private decimal currentBarPercentage = 0;
 
         private TimeSignature currentTimeSignature;
         private SymbolBuilder currentSymbolBuilder = null;
@@ -117,7 +116,6 @@ namespace DPA_Musicsheets.Factories
             symbolBuilder = AddLengthToSymbol(deltaTicks, symbolBuilder);
             Symbol rest = symbolBuilder.Build();
             composition.Tokens.Add(rest);
-            CheckForBar(rest.Length);
         }
 
         private void AddDefaultTimeSignature()
@@ -129,25 +127,12 @@ namespace DPA_Musicsheets.Factories
             composition.Tokens.Add(currentTimeSignature);
         }
 
-        private void CheckForBar(Length length)
-        {
-            int denom = length.Denominator.Value;
-            currentBarPercentage += 1m / denom * (2m - 1m / (decimal)Math.Pow(2, length.AmountOfDots));
-            if (currentBarPercentage >= (decimal)currentTimeSignature.Count / currentTimeSignature.Denominator.Value)
-            {
-                composition.Tokens.Add(new Barline());
-                currentBarPercentage = 0;
-            }
-
-        }
-
         private void EndCurrentNote(MidiEvent evt)
         {
             AddLengthToSymbol(evt.DeltaTicks, currentSymbolBuilder);
             Symbol note = currentSymbolBuilder.Build();
             composition.Tokens.Add(note);
             currentSymbolBuilder = null;
-            CheckForBar(note.Length);
         }
 
         private SymbolBuilder AddLengthToSymbol(int deltaTicks, SymbolBuilder builder)
