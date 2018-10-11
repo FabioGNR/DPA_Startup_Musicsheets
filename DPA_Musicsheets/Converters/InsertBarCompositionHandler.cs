@@ -62,6 +62,11 @@ namespace DPA_Musicsheets.Converters
 
         private void InsertBarline()
         {
+            if (index + 1 < composition.Tokens.Count)
+            {
+                if (composition.Tokens[index + 1] is Barline)
+                    return;
+            }
             composition.Tokens.Insert(index + 1, new Barline());
         }
 
