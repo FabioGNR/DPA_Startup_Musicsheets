@@ -129,7 +129,7 @@
     <Compile Include="Converters\ToMidiVisitor.cs" />
     <Compile Include="Converters\ToStaffsVisitor.cs" />
     <Compile Include="Editing\Commands\CommandArgs.cs" />
-    <Compile Include="Editing\Commands\ICommand.cs" />
+    <Compile Include="Editing\Commands\IEditorCommand.cs" />
     <Compile Include="Editing\Commands\RedoCommand.cs" />
     <Compile Include="Editing\Commands\SaveAsCommand.cs" />
     <Compile Include="Editing\Commands\UndoCommand.cs" />
@@ -141,8 +141,12 @@
     <Compile Include="Editing\Saving\ICompositionSaver.cs" />
     <Compile Include="Editing\Saving\LilypondSaver.cs" />
     <Compile Include="Editing\Saving\MidiSaver.cs" />
-    <Compile Include="Editing\Shortcuts\ShortcutKeyType.cs" />
-    <Compile Include="Editing\Shortcuts\ShortcutPattern.cs" />
+    <Compile Include="Editing\Shortcuts\BaseEditorShortcutHandler.cs" />
+    <Compile Include="Editing\Shortcuts\BaseShortcutChainHandler.cs" />
+    <Compile Include="Editing\Shortcuts\IShortcutChainHandler.cs" />
+    <Compile Include="Editing\Shortcuts\OpenFileShortcutHandler.cs" />
+    <Compile Include="Editing\Shortcuts\SaveAsShortcutHandler.cs" />
+    <Compile Include="Editing\Shortcuts\ShortcutChain.cs" />
     <Compile Include="Editing\State\BaseEditorState.cs" />
     <Compile Include="Editing\State\IdleEditorState.cs" />
     <Compile Include="Editing\IEditor.cs" />

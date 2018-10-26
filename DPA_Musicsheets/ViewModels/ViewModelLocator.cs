@@ -1,4 +1,5 @@
 ﻿using DPA_Musicsheets.Editing;
+using DPA_Musicsheets.Editing.Shortcuts;
 using DPA_Musicsheets.Managers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
@@ -16,6 +17,7 @@ namespace DPA_Musicsheets.ViewModels
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
             SimpleIoc.Default.Register<MusicLoader>();
+            SimpleIoc.Default.Register<Editor>();
             SimpleIoc.Default.Register<KeyDispatcher>();
 
             SimpleIoc.Default.Register<MainViewModel>();

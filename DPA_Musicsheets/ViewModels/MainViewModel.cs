@@ -49,6 +49,15 @@ namespace DPA_Musicsheets.ViewModels
             _musicLoader = musicLoader;
             FileName = @"Files/Alle-eendjes-zwemmen-in-het-water.mid";
             _keyDispatcher = keyDispatcher;
+            _musicLoader.OnCompositionChanged += _musicLoader_OnCompositionChanged;
+        }
+
+        private void _musicLoader_OnCompositionChanged(object sender, CompositionChangedArgs args)
+        {
+            if (!string.IsNullOrEmpty(args.NewComposition.FileName))
+            {
+                FileName = args.NewComposition.FileName;
+            }
         }
 
         public ICommand OpenFileCommand => new RelayCommand(() =>
@@ -73,15 +82,12 @@ namespace DPA_Musicsheets.ViewModels
 
         public ICommand OnKeyDownCommand => new RelayCommand<KeyEventArgs>((e) =>
         {
-            e.Handled = true;
             _keyDispatcher.DispatchKeyDown(e);
             Console.WriteLine($"Key down: {e.Key}");
         });
 
         public ICommand OnKeyUpCommand => new RelayCommand<KeyEventArgs>((e) =>
         {
-            e.Handled = true;
-
             _keyDispatcher.DispatchKeyUp(e);
 
             Console.WriteLine($"Key Up: { e.Key}");

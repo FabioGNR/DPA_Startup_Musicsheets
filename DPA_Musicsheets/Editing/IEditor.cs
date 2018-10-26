@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DPA_Musicsheets.Editing
 {
-    interface IEditor
+    public interface IEditor
     {
         void SetState(IEditorState state);
         void RenderAfterChange();
