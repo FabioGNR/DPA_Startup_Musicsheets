@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DPA_Musicsheets.Editor.State
+namespace DPA_Musicsheets.Editing.State
 {
     public interface IEditorState
     {

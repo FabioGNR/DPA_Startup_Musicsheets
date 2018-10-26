@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace DPA_Musicsheets.Editor.State
+namespace DPA_Musicsheets.Editing.State
 {
     class TypingEditorState : BaseEditorState
     {

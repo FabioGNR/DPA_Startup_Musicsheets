@@ -24,9 +24,8 @@ namespace DPA_Musicsheets.Managers
     /// </summary>
     public class MusicLoader
     {
-        public delegate void TriggerRenderHandler();
         // TODO: create a wrapperclass for event parameters
-        public delegate void CompositionChangedHandler(object sender, Composition composition, bool isFresh);
+        public delegate void CompositionChangedHandler(object sender, CompositionChangedArgs args);
         public event CompositionChangedHandler OnCompositionChanged;
 
         /// <summary>
@@ -44,7 +43,12 @@ namespace DPA_Musicsheets.Managers
 
         public void SetComposition(Models.Domain.Composition composition, bool isFresh = false)
         {
-            OnCompositionChanged?.Invoke(this, composition, isFresh);
+            var args = new CompositionChangedArgs
+            {
+                NewComposition = composition,
+                IsFresh = isFresh
+            };
+            OnCompositionChanged?.Invoke(this, args);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using DPA_Musicsheets.Managers;
+﻿using DPA_Musicsheets.Editing;
+using DPA_Musicsheets.Managers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
@@ -15,6 +16,7 @@ namespace DPA_Musicsheets.ViewModels
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
             SimpleIoc.Default.Register<MusicLoader>();
+            SimpleIoc.Default.Register<KeyDispatcher>();
 
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<LilypondViewModel>();

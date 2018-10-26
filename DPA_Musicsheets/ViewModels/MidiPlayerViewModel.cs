@@ -50,10 +50,10 @@ namespace DPA_Musicsheets.ViewModels
             musicLoader.OnCompositionChanged += MusicLoader_OnCompositionChanged;
         }
 
-        private void MusicLoader_OnCompositionChanged(object sender, Models.Domain.Composition composition, bool isFresh)
+        private void MusicLoader_OnCompositionChanged(object sender, CompositionChangedArgs args)
         {
             var visitor = new ToMidiVisitor();
-            foreach (var token in composition.Tokens)
+            foreach (var token in args.NewComposition.Tokens)
             {
                 token.Accept(visitor);
             }

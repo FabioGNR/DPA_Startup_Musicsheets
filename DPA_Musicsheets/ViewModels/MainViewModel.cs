@@ -42,12 +42,13 @@ namespace DPA_Musicsheets.ViewModels
         }
 
         private MusicLoader _musicLoader;
+        private KeyDispatcher _keyDispatcher;
 
-        public MainViewModel(MusicLoader musicLoader)
+        public MainViewModel(MusicLoader musicLoader, KeyDispatcher keyDispatcher)
         {
-            // TODO: Can we use some sort of eventing system so the managers layer doesn't have to know the viewmodel layer?
             _musicLoader = musicLoader;
             FileName = @"Files/Alle-eendjes-zwemmen-in-het-water.mid";
+            _keyDispatcher = keyDispatcher;
         }
 
         public ICommand OpenFileCommand => new RelayCommand(() =>
@@ -72,12 +73,15 @@ namespace DPA_Musicsheets.ViewModels
 
         public ICommand OnKeyDownCommand => new RelayCommand<KeyEventArgs>((e) =>
         {
+            _keyDispatcher.DispatchKeyDown(e);
             Console.WriteLine($"Key down: {e.Key}");
         });
 
-        public ICommand OnKeyUpCommand => new RelayCommand(() =>
+        public ICommand OnKeyUpCommand => new RelayCommand<KeyEventArgs>((e) =>
         {
-            Console.WriteLine("Key Up");
+            _keyDispatcher.DispatchKeyUp(e);
+
+            Console.WriteLine($"Key Up: { e.Key}");
         });
 
         public ICommand OnWindowClosingCommand => new RelayCommand(() =>
