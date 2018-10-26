@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DPA_Musicsheets.Editor.Memento
+namespace DPA_Musicsheets.Editing.Memento
 {
-    class EditorCaretaker
+    public class EditorCaretaker
     {
         private LinkedList<CompositionMemento> _mementoList;
         public LinkedListNode<CompositionMemento> CurrentItem { get; private set; }

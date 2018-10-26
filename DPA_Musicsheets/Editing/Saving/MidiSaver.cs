@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using DPA_Musicsheets.Converters;
 using DPA_Musicsheets.Models.Domain;
 
-namespace DPA_Musicsheets.Editor.Saving
+namespace DPA_Musicsheets.Editing.Saving
 {
     class MidiSaver : ICompositionSaver
     {

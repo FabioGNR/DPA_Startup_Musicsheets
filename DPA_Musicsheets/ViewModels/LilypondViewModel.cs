@@ -1,6 +1,8 @@
-﻿using DPA_Musicsheets.Editor.Memento;
-using DPA_Musicsheets.Editor.Saving;
-using DPA_Musicsheets.Editor.State;
+﻿using DPA_Musicsheets.Editing;
+using DPA_Musicsheets.Editing.Commands;
+using DPA_Musicsheets.Editing.Memento;
+using DPA_Musicsheets.Editing.Saving;
+using DPA_Musicsheets.Editing.State;
 using DPA_Musicsheets.Factories;
 using DPA_Musicsheets.Managers;
 using DPA_Musicsheets.Models.Domain;
@@ -15,12 +17,14 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using TriggerRenderHandler = DPA_Musicsheets.Managers.MusicLoader.TriggerRenderHandler;
 
 namespace DPA_Musicsheets.ViewModels
 {
-    public class LilypondViewModel : ViewModelBase, IEditor
+    public class LilypondViewModel : ViewModelBase
     {
+        public delegate void LilypondTextChangedHandler(object sender, string lilypondText);
+        public event LilypondTextChangedHandler TextChanged;
+
         private MusicLoader _musicLoader;
         private MainViewModel _mainViewModel;
 
@@ -30,9 +34,6 @@ namespace DPA_Musicsheets.ViewModels
         private string _text;
         private string _previousText;
         private string _nextText;
-
-        private IEditorState currentState;
-        EditorCaretaker careTaker = new EditorCaretaker();
 
         /// <summary>
         /// This text will be in the textbox.
@@ -58,59 +59,34 @@ namespace DPA_Musicsheets.ViewModels
         private bool _textChangedByLoad = false;
         private bool _waitingForRender = false;
 
-        private bool _textChangedByCommand = false;
+        private UndoCommand _undoCommand = new UndoCommand();
+        private RedoCommand _redoCommand = new RedoCommand();
+        private SaveAsCommand _saveAsCommand = new SaveAsCommand();
 
-        public LilypondViewModel(MusicLoader musicLoader, MainViewModel mainViewModel)
+        private Editor _editor;
+
+        public LilypondViewModel(MusicLoader musicLoader, KeyDispatcher keyDispatcher)
         {
             musicLoader.OnCompositionChanged += MusicLoader_OnCompositionChanged;
-            mainViewModel.OnWindowClosing += MainViewModel_OnWindowClosing;
+
             _musicLoader = musicLoader;
+            _editor = new Editor(musicLoader, keyDispatcher, this);
 
             _text = "Your lilypond text will appear here.";
-            SetState(new IdleEditorState(this));
         }
 
-        private void MusicLoader_OnCompositionChanged(object sender, Composition composition, bool isFresh)
+        private void MusicLoader_OnCompositionChanged(object sender, CompositionChangedArgs args)
         {
-            if (isFresh)
-            {
-                careTaker = new EditorCaretaker();
-            }
-            SetComposition(composition);
-        }
-
-        private void MainViewModel_OnWindowClosing(CancelEventArgs args)
-        {
-            if (currentState.CanClose())
-            {
-                if (!lastSavedComp?.Equals(careTaker.CurrentItem) ?? false)
-                {
-                    var result = MessageBox.Show("You have not saved. Do you want to save before closing?", "Save?", MessageBoxButton.YesNoCancel);
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        args.Cancel = true;
-                        SaveAsCommand.Execute(null);
-                    }
-                    else if (result == MessageBoxResult.Cancel) args.Cancel = true;
-                }
-            }
-            else
-            {
-                args.Cancel = true;
-            }
-
+            SetComposition(args.NewComposition);
         }
 
         public void SetComposition(Composition composition)
         {
-            if (!_textChangedByCommand)
-            {
-                SaveMemento(composition);
-            }
             var lilypondText = LilypondFactory.GetLilypond(composition);
             LilypondTextLoaded(lilypondText);
 
             UndoCommand.RaiseCanExecuteChanged();
+            RedoCommand.RaiseCanExecuteChanged();
         }
 
         private void LilypondTextLoaded(string text)
@@ -125,80 +101,30 @@ namespace DPA_Musicsheets.ViewModels
         /// </summary>
         public ICommand TextChangedCommand => new RelayCommand<TextChangedEventArgs>((args) =>
         {
-            _textChangedByCommand = false;
             if (!_textChangedByLoad)
             {
-                currentState.TextChanged();
+                TextChanged?.Invoke(this, LilypondText);
             }
         });
-
-        public void SetState(IEditorState state)
-        {
-            currentState = state;
-        }
-
-        public void RenderAfterChange()
-        {
-            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    Composition composition = new LilypondCompositionFactory().ReadComposition(LilypondText);
-                    Render(composition);
-                }));
-        }
-
-        private Composition CreateComposition()
-        {
-            return new LilypondCompositionFactory().ReadComposition(LilypondText);
-        }
 
         #region Commands for buttons like Undo, Redo and SaveAs
         public RelayCommand UndoCommand => new RelayCommand(() =>
         {
-            _textChangedByCommand = true;
-            Composition composition = new Composition();
-            composition.Restore(careTaker.Undo());
-            Render(composition);
+            _editor.ExecuteCommand(_undoCommand);
             RedoCommand.RaiseCanExecuteChanged();
-        }, () => careTaker.CanUndo);
+        }, () => _editor.CanCommandExecute(_undoCommand));
 
         public RelayCommand RedoCommand => new RelayCommand(() =>
         {
-            _textChangedByCommand = true;
-            Composition composition = new Composition();
-            composition.Restore(careTaker.Redo());
-            Render(composition);
+            _editor.ExecuteCommand(_redoCommand);
             UndoCommand.RaiseCanExecuteChanged();
-        }, () => careTaker.CanRedo);
+        }, () => _editor.CanCommandExecute(_redoCommand));
 
         public ICommand SaveAsCommand => new RelayCommand(() =>
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog() { Filter = AbstractSaver.GetFileTypeFilter() };
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                var composition = CreateComposition();
-                var filename = saveFileDialog.FileName;
-                try
-                {
-                    AbstractSaver.SaveToFile(composition, filename);
-                    lastSavedComp = composition;
-                }
-                catch (NotSupportedException e)
-                {
-                    MessageBox.Show(e.Message);
-                }
-            }
-        });
+            _editor.ExecuteCommand(_saveAsCommand);
+        }, () => _editor.CanCommandExecute(_saveAsCommand));
 
-        private Composition SaveMemento(Composition composition)
-        {
-            careTaker.Save(new CompositionMemento(composition));
-            return composition;
-        }
-
-        private void Render(Composition composition)
-        {
-            _musicLoader.SetComposition(composition);
-        }
         #endregion Commands for buttons like Undo, Redo and SaveAs
     }
 }

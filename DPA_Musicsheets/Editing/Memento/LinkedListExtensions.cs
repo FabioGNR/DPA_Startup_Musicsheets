@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DPA_Musicsheets.Editor.Memento
+namespace DPA_Musicsheets.Editing.Memento
 {
     public static class LinkedListExtensions
     {
