@@ -63,6 +63,7 @@ namespace DPA_Musicsheets.Editing
             if (args.IsFresh)
             {
                 CareTaker = new EditorCaretaker();
+                SetLastSavedComp(args.NewComposition);
             }
             if (!_compositionChangedByCommand)
             {
@@ -74,7 +75,7 @@ namespace DPA_Musicsheets.Editing
         {
             if (currentState.CanClose())
             {
-                if (CareTaker.CurrentItem != null && (!lastSavedComp?.Equals(CareTaker.CurrentItem) ?? false))
+                if (CareTaker.CurrentItem != null && !lastSavedComp.Equals(CareTaker.CurrentItem))
                 {
                     var result = MessageBox.Show("You have not saved. Do you want to save before closing?", "Save?", MessageBoxButton.YesNoCancel);
                     if (result == MessageBoxResult.Yes)
@@ -83,7 +84,8 @@ namespace DPA_Musicsheets.Editing
 
                         ExecuteCommand(saveAsCommand);
                     }
-                    else if (result == MessageBoxResult.Cancel) args.Cancel = true;
+                    else if (result == MessageBoxResult.Cancel)
+                        args.Cancel = true;
                 }
             }
             else
