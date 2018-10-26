@@ -20,7 +20,7 @@ namespace DPA_Musicsheets.Editor.State
 
         private void IdleTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            context.Render();
+            context.RenderAfterChange();
             context.SetState(new IdleEditorState(context));
         }
 

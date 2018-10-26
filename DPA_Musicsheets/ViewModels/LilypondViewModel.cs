@@ -52,6 +52,8 @@ namespace DPA_Musicsheets.ViewModels
         private bool _textChangedByLoad = false;
         private bool _waitingForRender = false;
 
+        private bool _textChangedByCommand = false;
+
         public LilypondViewModel(MusicLoader musicLoader)
         {
             musicLoader.OnCompositionChanged += MusicLoader_OnCompositionChanged;
@@ -61,15 +63,25 @@ namespace DPA_Musicsheets.ViewModels
             SetState(new IdleEditorState(this));
         }
 
-        private void MusicLoader_OnCompositionChanged(object sender, Composition composition)
+        private void MusicLoader_OnCompositionChanged(object sender, Composition composition, bool isFresh)
         {
+            if (isFresh)
+            {
+                careTaker = new EditorCaretaker();
+            }
             SetComposition(composition);
         }
 
         public void SetComposition(Composition composition)
         {
+            if (!_textChangedByCommand)
+            {
+                SaveMemento(composition);
+            }
             var lilypondText = LilypondFactory.GetLilypond(composition);
             LilypondTextLoaded(lilypondText);
+
+            UndoCommand.RaiseCanExecuteChanged();
         }
 
         private void LilypondTextLoaded(string text)
@@ -84,6 +96,7 @@ namespace DPA_Musicsheets.ViewModels
         /// </summary>
         public ICommand TextChangedCommand => new RelayCommand<TextChangedEventArgs>((args) =>
         {
+            _textChangedByCommand = false;
             if (!_textChangedByLoad)
             {
                 currentState.TextChanged();
@@ -95,29 +108,34 @@ namespace DPA_Musicsheets.ViewModels
             currentState = state;
         }
 
-        public void Render()
+        public void RenderAfterChange()
         {
             Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
+                    Console.WriteLine("CanUndo: " + careTaker.CanUndo);
                     Composition composition = new LilypondCompositionFactory().ReadComposition(LilypondText);
-                    careTaker.Save(new CompositionMemento(composition));
-                    _musicLoader.SetComposition(composition);
+                    Render(composition);
                 }));
         }
 
         #region Commands for buttons like Undo, Redo and SaveAs
         public RelayCommand UndoCommand => new RelayCommand(() =>
         {
-
-        }, () => _previousText != null && _previousText != LilypondText);
+            _textChangedByCommand = true;
+            Composition composition = new Composition();
+            composition.Restore(careTaker.Undo());
+            Render(composition);
+            RedoCommand.RaiseCanExecuteChanged();
+        }, () => careTaker.CanUndo);
 
         public RelayCommand RedoCommand => new RelayCommand(() =>
         {
-            _previousText = LilypondText;
-            LilypondText = _nextText;
-            _nextText = null;
-            RedoCommand.RaiseCanExecuteChanged();
-        }, () => _nextText != null && _nextText != LilypondText);
+            _textChangedByCommand = true;
+            Composition composition = new Composition();
+            composition.Restore(careTaker.Redo());
+            Render(composition);
+            UndoCommand.RaiseCanExecuteChanged();
+        }, () => careTaker.CanRedo);
 
         public ICommand SaveAsCommand => new RelayCommand(() =>
         {
@@ -145,6 +163,17 @@ namespace DPA_Musicsheets.ViewModels
                 }
             }
         });
+
+        private Composition SaveMemento(Composition composition)
+        {
+            careTaker.Save(new CompositionMemento(composition));
+            return composition;
+        }
+
+        private void Render(Composition composition)
+        {
+            _musicLoader.SetComposition(composition);
+        }
         #endregion Commands for buttons like Undo, Redo and SaveAs
     }
 }

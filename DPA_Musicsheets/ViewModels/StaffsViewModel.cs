@@ -32,7 +32,7 @@ namespace DPA_Musicsheets.ViewModels
             Staffs = new ObservableCollection<MusicalSymbol>();
         }
 
-        private void MusicLoader_OnCompositionChanged(object sender, Composition composition)
+        private void MusicLoader_OnCompositionChanged(object sender, Composition composition, bool isFresh)
         {
             SetComposition(composition);
         }

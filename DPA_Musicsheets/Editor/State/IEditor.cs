@@ -10,6 +10,6 @@ namespace DPA_Musicsheets.Editor.State
     interface IEditor
     {
         void SetState(IEditorState state);
-        void Render();
+        void RenderAfterChange();
     }
 }
