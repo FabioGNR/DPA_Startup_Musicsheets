@@ -74,7 +74,7 @@ namespace DPA_Musicsheets.Editing
         {
             if (currentState.CanClose())
             {
-                if (!lastSavedComp?.Equals(CareTaker.CurrentItem) ?? false)
+                if (CareTaker.CurrentItem != null && (!lastSavedComp?.Equals(CareTaker.CurrentItem) ?? false))
                 {
                     var result = MessageBox.Show("You have not saved. Do you want to save before closing?", "Save?", MessageBoxButton.YesNoCancel);
                     if (result == MessageBoxResult.Yes)

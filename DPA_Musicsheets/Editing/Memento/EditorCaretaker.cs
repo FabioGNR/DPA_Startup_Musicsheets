@@ -10,7 +10,7 @@ namespace DPA_Musicsheets.Editing.Memento
     {
         private LinkedList<CompositionMemento> _mementoList;
         private LinkedListNode<CompositionMemento> _currentItem { get; set; }
-        public CompositionMemento CurrentItem => _currentItem.Value;
+        public CompositionMemento CurrentItem => _currentItem?.Value;
 
         public EditorCaretaker()
         {
