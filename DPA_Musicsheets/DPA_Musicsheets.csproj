@@ -240,6 +240,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="ClassDiagramFinal.cd" />
     <None Include="ClassDiagrams\CD_DPA_Musicsheets.cd" />
     <None Include="Files\Eenvoudige voorbeeldfiles\Doorklinken.pdf" />
     <None Include="Files\Eenvoudige voorbeeldfiles\Keywords.pdf" />
@@ -281,14 +282,14 @@
     <None Include="Files\Twee-emmertjes-water-halen.ly">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Files\Twee-emmertjes-water-halen.mid">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Files\Twee-emmertjes-water-halen_ZonderHerhalingMaatwisseling.ly">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Files\denominator-foutief-Twee-emmertjes-water-halen.mid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Files\Eenvoudige voorbeeldfiles\Doorklinken.ly" />
     <Content Include="Files\Eenvoudige voorbeeldfiles\Herhaling_metAlternatief.ly" />
     <Content Include="Files\Eenvoudige voorbeeldfiles\Keywords.ly" />
