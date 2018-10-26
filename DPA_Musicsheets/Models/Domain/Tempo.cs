@@ -24,5 +24,17 @@ namespace DPA_Musicsheets.Models.Domain
         {
             visitor.ProcessToken(this);
         }
+
+        public override bool Equals(object obj)
+        {
+            var tempo = obj as Tempo;
+            return tempo != null &&
+                   BPM == tempo.BPM;
+        }
+
+        public override int GetHashCode()
+        {
+            return 1651896086 + BPM.GetHashCode();
+        }
     }
 }

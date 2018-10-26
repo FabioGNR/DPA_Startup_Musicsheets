@@ -151,7 +151,7 @@
     <Compile Include="Factories\StaffBuilder.cs" />
     <Compile Include="Managers\MusicLoader.cs" />
     <Compile Include="Models\Domain\Accidental.cs" />
-    <Compile Include="Models\Domain\BarLine.cs" />
+    <Compile Include="Models\Domain\Barline.cs" />
     <Compile Include="Models\Domain\Clef.cs" />
     <Compile Include="Models\Domain\ClefTone.cs" />
     <Compile Include="Models\Domain\Composition.cs" />

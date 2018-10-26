@@ -8,7 +8,7 @@ namespace DPA_Musicsheets.Editor.State
 {
     public interface IEditorState
     {
-        void Close();
+        bool CanClose();
         void TextChanged();
     }
 }

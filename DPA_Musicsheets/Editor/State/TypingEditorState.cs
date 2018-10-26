@@ -26,11 +26,14 @@ namespace DPA_Musicsheets.Editor.State
 
         public override void TextChanged()
         {
-            isSaved = false;
-            needsSaving = true;
             idleTimer.Stop();
             idleTimer.Start();
             base.TextChanged();
+        }
+
+        public override bool CanClose()
+        {
+            return false;
         }
     }
 }

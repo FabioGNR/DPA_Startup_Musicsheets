@@ -8,6 +8,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Win32;
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,6 +22,10 @@ namespace DPA_Musicsheets.ViewModels
     public class LilypondViewModel : ViewModelBase, IEditor
     {
         private MusicLoader _musicLoader;
+        private MainViewModel _mainViewModel;
+
+        private Composition lastSavedComp;
+        private bool needsSaving;
 
         private string _text;
         private string _previousText;
@@ -55,9 +60,10 @@ namespace DPA_Musicsheets.ViewModels
 
         private bool _textChangedByCommand = false;
 
-        public LilypondViewModel(MusicLoader musicLoader)
+        public LilypondViewModel(MusicLoader musicLoader, MainViewModel mainViewModel)
         {
             musicLoader.OnCompositionChanged += MusicLoader_OnCompositionChanged;
+            mainViewModel.OnWindowClosing += MainViewModel_OnWindowClosing;
             _musicLoader = musicLoader;
 
             _text = "Your lilypond text will appear here.";
@@ -71,6 +77,28 @@ namespace DPA_Musicsheets.ViewModels
                 careTaker = new EditorCaretaker();
             }
             SetComposition(composition);
+        }
+
+        private void MainViewModel_OnWindowClosing(CancelEventArgs args)
+        {
+            if (currentState.CanClose())
+            {
+                if (!lastSavedComp?.Equals(careTaker.CurrentItem) ?? false)
+                {
+                    var result = MessageBox.Show("You have not saved. Do you want to save before closing?", "Save?", MessageBoxButton.YesNoCancel);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        args.Cancel = true;
+                        SaveAsCommand.Execute(null);
+                    }
+                    else if (result == MessageBoxResult.Cancel) args.Cancel = true;
+                }
+            }
+            else
+            {
+                args.Cancel = true;
+            }
+
         }
 
         public void SetComposition(Composition composition)
@@ -152,6 +180,7 @@ namespace DPA_Musicsheets.ViewModels
                 try
                 {
                     AbstractSaver.SaveToFile(composition, filename);
+                    lastSavedComp = composition;
                 }
                 catch (NotSupportedException e)
                 {

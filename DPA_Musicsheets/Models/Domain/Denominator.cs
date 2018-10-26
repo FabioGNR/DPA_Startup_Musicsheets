@@ -24,5 +24,17 @@ namespace DPA_Musicsheets.Models.Domain
         {
             return Value.ToString();
         }
+
+        public override bool Equals(object obj)
+        {
+            var denominator = obj as Denominator;
+            return denominator != null &&
+                   Value == denominator.Value;
+        }
+
+        public override int GetHashCode()
+        {
+            return -1937169414 + Value.GetHashCode();
+        }
     }
 }

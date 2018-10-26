@@ -10,17 +10,15 @@ namespace DPA_Musicsheets.Editor.State
     abstract class BaseEditorState : IEditorState
     {
         protected IEditor context;
-        protected bool isSaved;
-        protected bool needsSaving;
 
         public BaseEditorState(IEditor context)
         {
             this.context = context;
         }
 
-        virtual public void Close()
+        virtual public bool CanClose()
         {
-            Application.Current.Shutdown();
+            return true;
         }
 
         virtual public void TextChanged()

@@ -9,7 +9,7 @@ namespace DPA_Musicsheets.Editor.Memento
     class EditorCaretaker
     {
         private LinkedList<CompositionMemento> _mementoList;
-        private LinkedListNode<CompositionMemento> _currentItem;
+        public LinkedListNode<CompositionMemento> CurrentItem { get; private set; }
 
         public EditorCaretaker()
         {
@@ -18,14 +18,14 @@ namespace DPA_Musicsheets.Editor.Memento
 
         public void Save(CompositionMemento memento)
         {
-            if (_currentItem == null)
+            if (CurrentItem == null)
             {
                 _mementoList.AddFirst(memento);
-                _currentItem = _mementoList.First;
+                CurrentItem = _mementoList.First;
             }
             else
             {
-                _currentItem = _currentItem.ReplaceNext(memento);
+                CurrentItem = CurrentItem.ReplaceNext(memento);
             }
         }
 
@@ -37,8 +37,8 @@ namespace DPA_Musicsheets.Editor.Memento
             }
             else
             {
-                _currentItem = _currentItem.Previous;
-                return _currentItem.Value;
+                CurrentItem = CurrentItem.Previous;
+                return CurrentItem.Value;
             }
         }
 
@@ -50,21 +50,21 @@ namespace DPA_Musicsheets.Editor.Memento
             }
             else
             {
-                _currentItem = _currentItem.Next;
-                return _currentItem.Value;
+                CurrentItem = CurrentItem.Next;
+                return CurrentItem.Value;
             }
         }
 
         public bool CanUndo
         {
-            get { return _currentItem != null && _currentItem.Previous != null; }
+            get { return CurrentItem != null && CurrentItem.Previous != null; }
         }
 
         public bool CanRedo
         {
             get
             {
-                return _currentItem != null && _currentItem.Next != null;
+                return CurrentItem != null && CurrentItem.Next != null;
             }
         }
     }
