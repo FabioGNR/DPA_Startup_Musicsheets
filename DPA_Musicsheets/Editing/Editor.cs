@@ -9,6 +9,7 @@ using DPA_Musicsheets.ViewModels;
 using Microsoft.Practices.ServiceLocation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,17 +22,23 @@ namespace DPA_Musicsheets.Editing
         private MusicLoader _musicLoader;
         private KeyDispatcher _keyDipatcher;
         private LilypondViewModel _lilypondViewModel;
+        private MainViewModel _mainViewModel;
         private IEditorState currentState;
+        private SaveAsCommand saveAsCommand = new SaveAsCommand();
         private bool _compositionChangedByCommand = false;
 
+        private Composition lastSavedComp;
         public EditorCaretaker CareTaker { get; private set; } = new EditorCaretaker();
 
         public Editor(MusicLoader musicLoader, KeyDispatcher keyDispatcher)
         {
             _musicLoader = musicLoader;
             _keyDipatcher = keyDispatcher;
+            _mainViewModel = ServiceLocator.Current.GetInstance<MainViewModel>(); ;
             SetState(new IdleEditorState(this));
             _musicLoader.OnCompositionChanged += _musicLoader_OnCompositionChanged;
+            _mainViewModel.OnWindowClosing += _mainViewModel_OnWindowClosing;
+            lastSavedComp = new Composition();
             // init shortcutchain
             new ShortcutChain(musicLoader, this, keyDispatcher);
         }
@@ -63,10 +70,35 @@ namespace DPA_Musicsheets.Editing
             }
         }
 
+        private void _mainViewModel_OnWindowClosing(CancelEventArgs args)
+        {
+            if (currentState.CanClose())
+            {
+                if (!lastSavedComp?.Equals(CareTaker.CurrentItem) ?? false)
+                {
+                    var result = MessageBox.Show("You have not saved. Do you want to save before closing?", "Save?", MessageBoxButton.YesNoCancel);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        args.Cancel = true;
+
+                        ExecuteCommand(saveAsCommand);
+                    }
+                    else if (result == MessageBoxResult.Cancel) args.Cancel = true;
+                }
+            }
+            else
+            {
+                args.Cancel = true;
+            }
+
+        }
+
         public void SetState(IEditorState state)
         {
             currentState = state;
         }
+
+
 
         public void RenderAfterChange()
         {
@@ -118,6 +150,11 @@ namespace DPA_Musicsheets.Editing
         private Composition CreateComposition(string lilypondText)
         {
             return new LilypondCompositionFactory().ReadComposition(lilypondText);
+        }
+
+        public void SetLastSavedComp(Composition comp)
+        {
+            lastSavedComp = comp;
         }
     }
 }

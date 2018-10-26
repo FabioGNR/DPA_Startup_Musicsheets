@@ -6,6 +6,7 @@ using PSAMWPFControlLibrary;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,9 @@ namespace DPA_Musicsheets.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
+        public delegate void WindowClosingHandler(CancelEventArgs args);
+        public event WindowClosingHandler OnWindowClosing;
+
         private string _fileName;
         public string FileName
         {
@@ -89,13 +93,13 @@ namespace DPA_Musicsheets.ViewModels
         public ICommand OnKeyUpCommand => new RelayCommand<KeyEventArgs>((e) =>
         {
             _keyDispatcher.DispatchKeyUp(e);
-
             Console.WriteLine($"Key Up: { e.Key}");
         });
 
-        public ICommand OnWindowClosingCommand => new RelayCommand(() =>
+        public ICommand OnWindowClosingCommand => new RelayCommand<CancelEventArgs>((args) =>
         {
-            ViewModelLocator.Cleanup();
+            OnWindowClosing?.Invoke(args);
+            if (!args.Cancel) ViewModelLocator.Cleanup();
         });
         #endregion Focus and key commands, these can be used for implementing hotkeys
     }

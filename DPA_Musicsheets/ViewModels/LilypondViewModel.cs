@@ -10,6 +10,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Win32;
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,6 +26,10 @@ namespace DPA_Musicsheets.ViewModels
         public event LilypondTextChangedHandler TextChanged;
 
         private MusicLoader _musicLoader;
+        private MainViewModel _mainViewModel;
+
+        private Composition lastSavedComp;
+        private bool needsSaving;
 
         private string _text;
         private string _previousText;
@@ -63,6 +68,7 @@ namespace DPA_Musicsheets.ViewModels
         public LilypondViewModel(MusicLoader musicLoader, Editor editor)
         {
             musicLoader.OnCompositionChanged += MusicLoader_OnCompositionChanged;
+
             _musicLoader = musicLoader;
             editor.SetLilypondViewModel(this);
             _editor = editor;
@@ -119,8 +125,6 @@ namespace DPA_Musicsheets.ViewModels
         {
             _editor.ExecuteCommand(_saveAsCommand);
         }, () => _editor.CanCommandExecute(_saveAsCommand));
-
-
 
         #endregion Commands for buttons like Undo, Redo and SaveAs
     }

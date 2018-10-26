@@ -15,5 +15,21 @@ namespace DPA_Musicsheets.Models.Domain
         {
             visitor.ProcessToken(this);
         }
+
+        public override bool Equals(object obj)
+        {
+            var clef = obj as Clef;
+            return clef != null &&
+                   Tone == clef.Tone &&
+                   Bar == clef.Bar;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -153730685;
+            hashCode = hashCode * -1521134295 + Tone.GetHashCode();
+            hashCode = hashCode * -1521134295 + Bar.GetHashCode();
+            return hashCode;
+        }
     }
 }
