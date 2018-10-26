@@ -65,12 +65,13 @@ namespace DPA_Musicsheets.ViewModels
 
         private IEditor _editor = new DummyEditor();
 
-        public LilypondViewModel(MusicLoader musicLoader, KeyDispatcher keyDispatcher)
+        public LilypondViewModel(MusicLoader musicLoader, Editor editor)
         {
             musicLoader.OnCompositionChanged += MusicLoader_OnCompositionChanged;
 
             _musicLoader = musicLoader;
-            _editor = new Editor(musicLoader, keyDispatcher, this);
+            editor.SetLilypondViewModel(this);
+            _editor = editor;
 
             _text = "Your lilypond text will appear here.";
         }

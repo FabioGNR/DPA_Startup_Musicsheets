@@ -37,7 +37,7 @@ namespace DPA_Musicsheets.Managers
             ICompositionFactory factory = AbstractCompositionFactory.GetFactory(Path.GetExtension(fileName));
 
             Composition composition = factory.ReadComposition(fileName);
-
+            composition.FileName = fileName;
             SetComposition(composition, true);
         }
 

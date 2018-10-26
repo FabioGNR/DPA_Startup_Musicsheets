@@ -1,5 +1,6 @@
 ﻿using DPA_Musicsheets.Editing.Commands;
 using DPA_Musicsheets.Editing.Memento;
+using DPA_Musicsheets.Editing.Shortcuts;
 using DPA_Musicsheets.Editing.State;
 using DPA_Musicsheets.Factories;
 using DPA_Musicsheets.Managers;
@@ -29,18 +30,27 @@ namespace DPA_Musicsheets.Editing
         private Composition lastSavedComp;
         public EditorCaretaker CareTaker { get; private set; } = new EditorCaretaker();
 
-        public Editor(MusicLoader musicLoader, KeyDispatcher keyDispatcher,
-            LilypondViewModel lilypondViewModel)
+        public Editor(MusicLoader musicLoader, KeyDispatcher keyDispatcher)
         {
             _musicLoader = musicLoader;
             _keyDipatcher = keyDispatcher;
-            _lilypondViewModel = lilypondViewModel;
             _mainViewModel = ServiceLocator.Current.GetInstance<MainViewModel>(); ;
             SetState(new IdleEditorState(this));
             _musicLoader.OnCompositionChanged += _musicLoader_OnCompositionChanged;
-            _lilypondViewModel.TextChanged += _lilypondViewModel_TextChanged;
             _mainViewModel.OnWindowClosing += _mainViewModel_OnWindowClosing;
             lastSavedComp = new Composition();
+            // init shortcutchain
+            new ShortcutChain(musicLoader, this, keyDispatcher);
+        }
+
+        public void SetLilypondViewModel(LilypondViewModel lilypondViewModel)
+        {
+            if (_lilypondViewModel != null)
+            {
+                _lilypondViewModel.TextChanged -= _lilypondViewModel_TextChanged;
+            }
+            _lilypondViewModel = lilypondViewModel;
+            _lilypondViewModel.TextChanged += _lilypondViewModel_TextChanged;
         }
 
         private void _lilypondViewModel_TextChanged(object sender, string lilypondText)
