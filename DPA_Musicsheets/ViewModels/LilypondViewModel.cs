@@ -1,4 +1,5 @@
 ﻿using DPA_Musicsheets.Editor.Memento;
+using DPA_Musicsheets.Editor.Saving;
 using DPA_Musicsheets.Editor.State;
 using DPA_Musicsheets.Factories;
 using DPA_Musicsheets.Managers;
@@ -112,10 +113,14 @@ namespace DPA_Musicsheets.ViewModels
         {
             Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    Console.WriteLine("CanUndo: " + careTaker.CanUndo);
                     Composition composition = new LilypondCompositionFactory().ReadComposition(LilypondText);
                     Render(composition);
                 }));
+        }
+
+        private Composition CreateComposition()
+        {
+            return new LilypondCompositionFactory().ReadComposition(LilypondText);
         }
 
         #region Commands for buttons like Undo, Redo and SaveAs
@@ -139,27 +144,18 @@ namespace DPA_Musicsheets.ViewModels
 
         public ICommand SaveAsCommand => new RelayCommand(() =>
         {
-            // TODO: In the application a lot of classes know which filetypes are supported. Lots and lots of repeated code here...
-            // Can this be done better?
-            SaveFileDialog saveFileDialog = new SaveFileDialog() { Filter = "Midi|*.mid|Lilypond|*.ly|PDF|*.pdf" };
+            SaveFileDialog saveFileDialog = new SaveFileDialog() { Filter = AbstractSaver.GetFileTypeFilter() };
             if (saveFileDialog.ShowDialog() == true)
             {
-                string extension = Path.GetExtension(saveFileDialog.FileName);
-                if (extension.EndsWith(".mid"))
+                var composition = CreateComposition();
+                var filename = saveFileDialog.FileName;
+                try
                 {
-                    //_musicLoader.SaveToMidi(saveFileDialog.FileName);
+                    AbstractSaver.SaveToFile(composition, filename);
                 }
-                else if (extension.EndsWith(".ly"))
+                catch (NotSupportedException e)
                 {
-                    //_musicLoader.SaveToLilypond(saveFileDialog.FileName);
-                }
-                else if (extension.EndsWith(".pdf"))
-                {
-                    //_musicLoader.SaveToPDF(saveFileDialog.FileName);
-                }
-                else
-                {
-                    MessageBox.Show($"Extension {extension} is not supported.");
+                    MessageBox.Show(e.Message);
                 }
             }
         });

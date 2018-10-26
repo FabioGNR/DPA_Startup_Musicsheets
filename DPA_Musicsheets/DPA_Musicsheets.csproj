@@ -131,6 +131,10 @@
     <Compile Include="Editor\Memento\EditorCaretaker.cs" />
     <Compile Include="Editor\Memento\CompositionMemento.cs" />
     <Compile Include="Editor\Memento\LinkedListExtensions.cs" />
+    <Compile Include="Editor\Saving\AbstractSaver.cs" />
+    <Compile Include="Editor\Saving\ICompositionSaver.cs" />
+    <Compile Include="Editor\Saving\LilypondSaver.cs" />
+    <Compile Include="Editor\Saving\MidiSaver.cs" />
     <Compile Include="Editor\State\BaseEditorState.cs" />
     <Compile Include="Editor\State\IdleEditorState.cs" />
     <Compile Include="Editor\State\IEditor.cs" />
