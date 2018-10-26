@@ -8,7 +8,7 @@ namespace DPA_Musicsheets.Converters.Lilypond
 {
     internal class LilypondNoteConverter : ILilypondTokenConverter
     {
-        private static Regex noteRegex = new Regex(@"(~?)([a-g])(is|es)?([,']*)(\d+)(\.*)");
+        private static Regex noteRegex = new Regex(@"~?([a-g])(is|es)?([,']*)(\d+)(\.*)");
         private int octaveOffset = 0;
         private Tone? previousNoteTone = null;
 
@@ -19,27 +19,25 @@ namespace DPA_Musicsheets.Converters.Lilypond
             if (match.Success)
             {
                 SymbolBuilder builder = new SymbolBuilder();
-                bool slur = match.Groups[0].Success;
-                //TODO: add slur to builder
-                var tone = GetToneFromLetter(match.Groups[2].Value);
+                var tone = GetToneFromLetter(match.Groups[1].Value);
                 Accidental accidental = Accidental.None;
-                if (match.Groups[3].Success)
+                if (match.Groups[2].Success)
                 {
-                    accidental = match.Groups[3].Value == "is" ? Accidental.Sharp : Accidental.Flat;
+                    accidental = match.Groups[2].Value == "is" ? Accidental.Sharp : Accidental.Flat;
                 }
                 // determine octave
                 MoveToClosestOctaveOffset(tone);
                 previousNoteTone = tone;
-                if (match.Groups[4].Success)
+                if (match.Groups[3].Success)
                 {
-                    UpdateOctaveOffset(match.Groups[4].Value);
+                    UpdateOctaveOffset(match.Groups[3].Value);
                 }
                 // set pitch
                 builder.WithPitch(tone, accidental, octaveOffset);
                 // determine length
-                if (int.TryParse(match.Groups[5].Value, out int denominator))
+                if (int.TryParse(match.Groups[4].Value, out int denominator))
                 {
-                    int dots = match.Groups[6].Length;
+                    int dots = match.Groups[5].Length;
                     builder.WithLength(denominator, dots);
                 }
                 return builder.Build();

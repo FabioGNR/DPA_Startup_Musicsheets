@@ -81,7 +81,6 @@ namespace DPA_Musicsheets.Converters
 
         public void ProcessToken(Tempo tempo)
         {
-            //TODO: read 4 from Denominator in TimeSignature
             lilypondText.Append(@"\tempo 4=");
             lilypondText.Append(tempo.BPM);
             lilypondText.AppendLine();

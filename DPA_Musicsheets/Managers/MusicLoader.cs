@@ -24,7 +24,6 @@ namespace DPA_Musicsheets.Managers
     /// </summary>
     public class MusicLoader
     {
-        // TODO: create a wrapperclass for event parameters
         public delegate void CompositionChangedHandler(object sender, CompositionChangedArgs args);
         public event CompositionChangedHandler OnCompositionChanged;
 
