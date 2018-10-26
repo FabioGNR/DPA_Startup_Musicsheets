@@ -9,11 +9,24 @@ namespace DPA_Musicsheets.Builders
 {
     public class ClefBuilder
     {
+        private static Dictionary<ClefTone, int> defaultBars = new Dictionary<ClefTone, int>()
+        {
+            {ClefTone.G, 2 },
+            {ClefTone.F, 4 },
+            {ClefTone.C, 3 },
+        };
         private ClefTone tone = ClefTone.Unknown;
         private int bar = 0;
+        private bool barSet = false;
+
         public ClefBuilder WithTone(ClefTone tone)
         {
             this.tone = tone;
+            if(!barSet)
+            {
+                // set bar to default for given tone
+                bar = defaultBars[tone];
+            }
             return this;
         }
 
@@ -23,6 +36,7 @@ namespace DPA_Musicsheets.Builders
             {
                 throw new ArgumentException("Bar must be between 1 and 5");
             }
+            barSet = true;
             this.bar = bar;
             return this;
         }

@@ -1,5 +1,6 @@
 ﻿using DPA_Musicsheets.Builders;
 using DPA_Musicsheets.Models.Domain;
+using System;
 
 namespace DPA_Musicsheets.Converters.Lilypond
 {
@@ -9,8 +10,12 @@ namespace DPA_Musicsheets.Converters.Lilypond
         {
             enumerator.Next();
             ClefBuilder builder = new ClefBuilder();
-            builder.OnBar(2);
-            builder.WithTone(ClefTone.G);
+            ClefTone tone = ClefTone.G;
+            if(enumerator.Current != null)
+            {
+                Enum.TryParse(enumerator.Current.TokenText, true, out tone);
+            }
+            builder.WithTone(tone);
             return builder.Build();
         }
     }
