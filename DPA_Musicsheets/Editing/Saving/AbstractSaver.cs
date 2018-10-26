@@ -16,6 +16,7 @@ namespace DPA_Musicsheets.Editing.Saving
         {
             _savers.Add(".mid", new MidiSaver());
             _savers.Add(".ly", new LilypondSaver());
+            _savers.Add(".pdf", new PDFSaver());
         }
 
         public static void SaveToFile(Composition composition, string filename)

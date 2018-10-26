@@ -141,6 +141,7 @@
     <Compile Include="Editing\Saving\ICompositionSaver.cs" />
     <Compile Include="Editing\Saving\LilypondSaver.cs" />
     <Compile Include="Editing\Saving\MidiSaver.cs" />
+    <Compile Include="Editing\Saving\PDFSaver.cs" />
     <Compile Include="Editing\Shortcuts\ShortcutKeyType.cs" />
     <Compile Include="Editing\Shortcuts\ShortcutPattern.cs" />
     <Compile Include="Editing\State\BaseEditorState.cs" />

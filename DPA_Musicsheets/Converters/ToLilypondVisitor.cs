@@ -14,7 +14,13 @@ namespace DPA_Musicsheets.Converters
         private int barsPerLine = 2;
         private int currentBarsOnLine = 0;
 
-        public string Build() => lilypondText.ToString();
+        public string Build()
+        {
+            string result = "relative c'' { \r\n";
+            result += lilypondText.ToString();
+            result += "\r\n}";
+            return result;
+        }
 
         public void ProcessToken(Note note)
         {
