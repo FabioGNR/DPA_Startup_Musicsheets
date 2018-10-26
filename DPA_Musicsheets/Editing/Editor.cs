@@ -22,7 +22,7 @@ namespace DPA_Musicsheets.Editing
         private IEditorState currentState;
         private bool _compositionChangedByCommand = false;
 
-        public EditorCaretaker CareTaker { get; private set; }
+        public EditorCaretaker CareTaker { get; private set; } = new EditorCaretaker();
 
         public Editor(MusicLoader musicLoader, KeyDispatcher keyDispatcher,
             LilypondViewModel lilypondViewModel)

@@ -58,7 +58,7 @@ namespace DPA_Musicsheets.ViewModels
         private RedoCommand _redoCommand = new RedoCommand();
         private SaveAsCommand _saveAsCommand = new SaveAsCommand();
 
-        private Editor _editor;
+        private IEditor _editor = new DummyEditor();
 
         public LilypondViewModel(MusicLoader musicLoader, KeyDispatcher keyDispatcher)
         {

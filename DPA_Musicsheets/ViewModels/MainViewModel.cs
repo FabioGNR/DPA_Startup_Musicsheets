@@ -73,12 +73,15 @@ namespace DPA_Musicsheets.ViewModels
 
         public ICommand OnKeyDownCommand => new RelayCommand<KeyEventArgs>((e) =>
         {
+            e.Handled = true;
             _keyDispatcher.DispatchKeyDown(e);
             Console.WriteLine($"Key down: {e.Key}");
         });
 
         public ICommand OnKeyUpCommand => new RelayCommand<KeyEventArgs>((e) =>
         {
+            e.Handled = true;
+
             _keyDispatcher.DispatchKeyUp(e);
 
             Console.WriteLine($"Key Up: { e.Key}");
