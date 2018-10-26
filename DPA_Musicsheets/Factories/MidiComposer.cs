@@ -4,8 +4,6 @@ using Sanford.Multimedia.Midi;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DPA_Musicsheets.Factories
 {
@@ -14,6 +12,8 @@ namespace DPA_Musicsheets.Factories
         private readonly Sequence sequence;
         private readonly IEnumerable<MidiEvent> events;
         private readonly Composition composition = new Composition();
+        private readonly Dictionary<ChannelCommand, Action<MidiEvent, ChannelMessage>> channelCommandProcessors;
+        private readonly Dictionary<MetaType, Action<MidiEvent, MetaMessage>> metaCommandProcessors;
 
         private TimeSignature currentTimeSignature;
         private SymbolBuilder currentSymbolBuilder = null;
@@ -22,6 +22,18 @@ namespace DPA_Musicsheets.Factories
         {
             this.sequence = sequence;
             events = JoinTracks(sequence);
+            #region Build processor dictionary
+            channelCommandProcessors = new Dictionary<ChannelCommand, Action<MidiEvent, ChannelMessage>>()
+            {
+                { ChannelCommand.NoteOn, ProcessNoteOnMessage },
+                { ChannelCommand.NoteOff, (evt, msg) => EndCurrentNote(evt) }
+            };
+            metaCommandProcessors = new Dictionary<MetaType, Action<MidiEvent, MetaMessage>>()
+            {
+                { MetaType.TimeSignature, ProcessTimeSignatureMessage},
+                { MetaType.Tempo, ProcessTempoMessage},
+            };
+            #endregion
         }
 
         public Composition Compose()
@@ -62,32 +74,50 @@ namespace DPA_Musicsheets.Factories
 
         private void ProcessMetaMessage(MidiEvent evt)
         {
-            MetaMessage msg = evt.MidiMessage as MetaMessage;
-            byte[] msgBytes = msg.GetBytes();
-            switch (msg.MetaType)
+            if(evt.MidiMessage is MetaMessage msg)
             {
-                case MetaType.TimeSignature:
-                    int count = msgBytes[0];
-                    int denominator = (int)Math.Pow(msgBytes[1], 2);
-                    Builders.TimeSignatureBuilder timeSignatureBuilder = new Builders.TimeSignatureBuilder();
-                    timeSignatureBuilder.WithCount(count);
-                    timeSignatureBuilder.WithDenominator(denominator);
-                    currentTimeSignature = timeSignatureBuilder.Build();
-                    composition.Tokens.Add(currentTimeSignature);
-                    break;
-                case MetaType.Tempo:
-                    int microSecondsPB = (msgBytes[0] << 16 | msgBytes[1] << 8 | msgBytes[2]);
-                    int BPM = 60_000_000 / microSecondsPB;
-                    composition.Tokens.Add(new TempoBuilder().WithBPM(BPM).Build());
-                    break;
+                if(metaCommandProcessors.ContainsKey(msg.MetaType))
+                {
+                    var processor = metaCommandProcessors[msg.MetaType];
+                    processor(evt, msg);
+                }
             }
+        }
+
+        private void ProcessTimeSignatureMessage(MidiEvent evt, MetaMessage msg)
+        {
+            var msgBytes = msg.GetBytes();
+            int count = msgBytes[0];
+            int denominator = (int)Math.Pow(msgBytes[1], 2);
+            Builders.TimeSignatureBuilder timeSignatureBuilder = new Builders.TimeSignatureBuilder();
+            timeSignatureBuilder.WithCount(count);
+            timeSignatureBuilder.WithDenominator(denominator);
+            currentTimeSignature = timeSignatureBuilder.Build();
+            composition.Tokens.Add(currentTimeSignature);
+        }
+
+        private void ProcessTempoMessage(MidiEvent evt, MetaMessage msg)
+        {
+            var msgBytes = msg.GetBytes();
+            int microSecondsPB = (msgBytes[0] << 16 | msgBytes[1] << 8 | msgBytes[2]);
+            int BPM = 60_000_000 / microSecondsPB;
+            composition.Tokens.Add(new TempoBuilder().WithBPM(BPM).Build());
         }
 
         private void ProcessChannelMessage(MidiEvent evt)
         {
-            ChannelMessage msg = evt.MidiMessage as ChannelMessage;
-            if (msg == null || msg.Command != ChannelCommand.NoteOn)
-                return;
+            if (evt.MidiMessage is ChannelMessage msg)
+            {
+                if (channelCommandProcessors.ContainsKey(msg.Command))
+                {
+                    var processor = channelCommandProcessors[msg.Command];
+                    processor(evt, msg);
+                }
+            }
+        }
+
+        private void ProcessNoteOnMessage(MidiEvent evt, ChannelMessage msg)
+        {
             if (msg.Data2 > 0)
             {
                 if (currentTimeSignature == null)
@@ -100,7 +130,7 @@ namespace DPA_Musicsheets.Factories
                 }
                 AddPitchToSymbol(msg.Data1);
             }
-            else if (currentSymbolBuilder != null)
+            else
             {
                 EndCurrentNote(evt);
             }
@@ -125,6 +155,9 @@ namespace DPA_Musicsheets.Factories
 
         private void EndCurrentNote(MidiEvent evt)
         {
+            if (currentSymbolBuilder == null)
+                return;
+
             AddLengthToSymbol(evt.DeltaTicks, currentSymbolBuilder);
             Symbol note = currentSymbolBuilder.Build();
             composition.Tokens.Add(note);
