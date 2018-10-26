@@ -25,7 +25,7 @@ namespace DPA_Musicsheets.Editing.Commands
                 try
                 {
                     AbstractSaver.SaveToFile(composition, filename);
-                    args.Editor.setLastSavedComp(composition);
+                    args.Editor.SetLastSavedComp(composition);
                 }
                 catch (NotSupportedException e)
                 {

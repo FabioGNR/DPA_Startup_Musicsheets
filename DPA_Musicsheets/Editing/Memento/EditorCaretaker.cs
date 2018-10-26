@@ -9,7 +9,8 @@ namespace DPA_Musicsheets.Editing.Memento
     public class EditorCaretaker
     {
         private LinkedList<CompositionMemento> _mementoList;
-        public LinkedListNode<CompositionMemento> CurrentItem { get; private set; }
+        private LinkedListNode<CompositionMemento> _currentItem { get; set; }
+        public CompositionMemento CurrentItem => _currentItem.Value;
 
         public EditorCaretaker()
         {
@@ -18,14 +19,14 @@ namespace DPA_Musicsheets.Editing.Memento
 
         public void Save(CompositionMemento memento)
         {
-            if (CurrentItem == null)
+            if (_currentItem == null)
             {
                 _mementoList.AddFirst(memento);
-                CurrentItem = _mementoList.First;
+                _currentItem = _mementoList.First;
             }
             else
             {
-                CurrentItem = CurrentItem.ReplaceNext(memento);
+                _currentItem = _currentItem.ReplaceNext(memento);
             }
         }
 
@@ -37,8 +38,8 @@ namespace DPA_Musicsheets.Editing.Memento
             }
             else
             {
-                CurrentItem = CurrentItem.Previous;
-                return CurrentItem.Value;
+                _currentItem = _currentItem.Previous;
+                return _currentItem.Value;
             }
         }
 
@@ -50,21 +51,21 @@ namespace DPA_Musicsheets.Editing.Memento
             }
             else
             {
-                CurrentItem = CurrentItem.Next;
-                return CurrentItem.Value;
+                _currentItem = _currentItem.Next;
+                return _currentItem.Value;
             }
         }
 
         public bool CanUndo
         {
-            get { return CurrentItem != null && CurrentItem.Previous != null; }
+            get { return _currentItem != null && _currentItem.Previous != null; }
         }
 
         public bool CanRedo
         {
             get
             {
-                return CurrentItem != null && CurrentItem.Next != null;
+                return _currentItem != null && _currentItem.Next != null;
             }
         }
     }
