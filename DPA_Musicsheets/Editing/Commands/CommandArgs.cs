@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DPA_Musicsheets.Editing.Commands
 {
-    public class CommandArgs
+    public class EditorCommandArgs
     {
         /// <summary>
         /// The editor context to store mementos and rerender
@@ -24,9 +24,9 @@ namespace DPA_Musicsheets.Editing.Commands
         /// <summary>
         /// Index at which the user selected text stops
         /// </summary>
-        public int SelectionEnd { get; set; }
+        public int SelectionLength { get; set; }
 
-        public CommandArgs(Editor editor)
+        public EditorCommandArgs(Editor editor)
         {
             this.Editor = editor;
         }

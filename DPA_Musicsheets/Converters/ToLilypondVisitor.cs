@@ -11,7 +11,6 @@ namespace DPA_Musicsheets.Converters
     {
         private StringBuilder lilypondText = new StringBuilder();
         private Note lastNote = null;
-        private int barsPerLine = 2;
         private int currentBarsOnLine = 0;
 
         public string Build()
@@ -63,7 +62,7 @@ namespace DPA_Musicsheets.Converters
         {
             currentBarsOnLine++;
             lilypondText.Append("| ");
-            if (currentBarsOnLine >= barsPerLine)
+            if (currentBarsOnLine >= Constants.Lilypond.BARS_PER_LINE)
             {
                 currentBarsOnLine = 0;
                 lilypondText.AppendLine();

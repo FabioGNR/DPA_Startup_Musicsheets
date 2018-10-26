@@ -12,6 +12,10 @@ namespace DPA_Musicsheets
         {
             public const int CENTRAL_C = 60;
         }
+        internal static class Lilypond
+        {
+            public const int BARS_PER_LINE = 2;
+        }
         public const int TONES_IN_OCTAVE = 12;
     }
 }

@@ -9,9 +9,9 @@ namespace DPA_Musicsheets.Editing.Commands
 {
     public class UndoCommand : IEditorCommand
     {
-        public bool CanExecute(CommandArgs args) => args.Editor.CareTaker.CanUndo;
+        public bool CanExecute(EditorCommandArgs args) => args.Editor.CareTaker.CanUndo;
 
-        public void Execute(CommandArgs args)
+        public void Execute(EditorCommandArgs args)
         {
             Composition composition = new Composition();
             composition.Restore(args.Editor.CareTaker.Undo());

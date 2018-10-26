@@ -16,14 +16,11 @@ namespace DPA_Musicsheets.Editing.State
             this.context = context;
         }
 
-        virtual public bool CanClose()
-        {
-            return true;
-        }
+        virtual public bool CanClose() => true;
 
         virtual public void TextChanged()
         {
-
+            // default behaviour is to do nothing
         }
     }
 }

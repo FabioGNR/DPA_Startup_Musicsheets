@@ -25,15 +25,10 @@ namespace DPA_Musicsheets.ViewModels
         public delegate void LilypondTextChangedHandler(object sender, string lilypondText);
         public event LilypondTextChangedHandler TextChanged;
 
-        private MusicLoader _musicLoader;
-        private MainViewModel _mainViewModel;
+        private readonly MusicLoader _musicLoader;
 
-        private Composition lastSavedComp;
-        private bool needsSaving;
 
         private string _text;
-        private string _previousText;
-        private string _nextText;
 
         /// <summary>
         /// This text will be in the textbox.
@@ -47,21 +42,19 @@ namespace DPA_Musicsheets.ViewModels
             }
             set
             {
-                if (!_waitingForRender && !_textChangedByLoad)
-                {
-                    _previousText = _text;
-                }
                 _text = value;
                 RaisePropertyChanged(() => LilypondText);
             }
         }
+        public int SelectionStart { get; private set; }
+
+        public int SelectionLength { get; private set; }
 
         private bool _textChangedByLoad = false;
-        private bool _waitingForRender = false;
 
-        private UndoCommand _undoCommand = new UndoCommand();
-        private RedoCommand _redoCommand = new RedoCommand();
-        private SaveAsCommand _saveAsCommand = new SaveAsCommand();
+        private readonly UndoCommand _undoCommand = new UndoCommand();
+        private readonly RedoCommand _redoCommand = new RedoCommand();
+        private readonly SaveAsCommand _saveAsCommand = new SaveAsCommand();
 
         private IEditor _editor = new DummyEditor();
 
@@ -93,7 +86,7 @@ namespace DPA_Musicsheets.ViewModels
         private void LilypondTextLoaded(string text)
         {
             _textChangedByLoad = true;
-            LilypondText = _previousText = text;
+            LilypondText = text;
             _textChangedByLoad = false;
         }
 
@@ -105,6 +98,18 @@ namespace DPA_Musicsheets.ViewModels
             if (!_textChangedByLoad)
             {
                 TextChanged?.Invoke(this, LilypondText);
+            }
+        });
+
+        /// <summary>
+        /// This occurs when the selection in the textbox has changed.
+        /// </summary>
+        public ICommand SelectionChangedCommand => new RelayCommand<RoutedEventArgs>((args) =>
+        {
+            if(args.OriginalSource is TextBox textBox)
+            {
+                SelectionStart = textBox.SelectionStart;
+                SelectionLength = textBox.SelectionLength;
             }
         });
 

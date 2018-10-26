@@ -31,9 +31,6 @@ namespace DPA_Musicsheets.Editing.State
             base.TextChanged();
         }
 
-        public override bool CanClose()
-        {
-            return false;
-        }
+        public override bool CanClose() => false;
     }
 }

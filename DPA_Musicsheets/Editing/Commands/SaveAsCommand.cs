@@ -12,9 +12,9 @@ namespace DPA_Musicsheets.Editing.Commands
 {
     public class SaveAsCommand : IEditorCommand
     {
-        public bool CanExecute(CommandArgs args) => true;
+        public bool CanExecute(EditorCommandArgs args) => true;
 
-        public void Execute(CommandArgs args)
+        public void Execute(EditorCommandArgs args)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog() { Filter = AbstractSaver.GetFileTypeFilter() };
             if (saveFileDialog.ShowDialog() == true)

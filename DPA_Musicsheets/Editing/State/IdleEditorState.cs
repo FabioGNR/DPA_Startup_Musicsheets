@@ -12,11 +12,6 @@ namespace DPA_Musicsheets.Editing.State
         {
         }
 
-        public override bool CanClose()
-        {
-            return base.CanClose();
-        }
-
         public override void TextChanged()
         {
             base.TextChanged();

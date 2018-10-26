@@ -20,25 +20,25 @@ namespace DPA_Musicsheets.Editing
     public class Editor : IEditor
     {
         private MusicLoader _musicLoader;
-        private KeyDispatcher _keyDipatcher;
         private LilypondViewModel _lilypondViewModel;
         private MainViewModel _mainViewModel;
         private IEditorState currentState;
-        private SaveAsCommand saveAsCommand = new SaveAsCommand();
+        private readonly SaveAsCommand saveAsCommand = new SaveAsCommand();
         private bool _compositionChangedByCommand = false;
 
-        private Composition lastSavedComp;
+        private Composition lastSavedComposition;
         public EditorCaretaker CareTaker { get; private set; } = new EditorCaretaker();
 
         public Editor(MusicLoader musicLoader, KeyDispatcher keyDispatcher)
         {
+            // set dependencies
             _musicLoader = musicLoader;
-            _keyDipatcher = keyDispatcher;
-            _mainViewModel = ServiceLocator.Current.GetInstance<MainViewModel>(); ;
+            _mainViewModel = ServiceLocator.Current.GetInstance<MainViewModel>();
+            // init state and subscribe events
+            lastSavedComposition = new Composition();
             SetState(new IdleEditorState(this));
             _musicLoader.OnCompositionChanged += _musicLoader_OnCompositionChanged;
             _mainViewModel.OnWindowClosing += _mainViewModel_OnWindowClosing;
-            lastSavedComp = new Composition();
             // init shortcutchain
             new ShortcutChain(musicLoader, this, keyDispatcher);
         }
@@ -75,7 +75,7 @@ namespace DPA_Musicsheets.Editing
         {
             if (currentState.CanClose())
             {
-                if (CareTaker.CurrentItem != null && !lastSavedComp.Equals(CareTaker.CurrentItem))
+                if (CareTaker.CurrentItem != null && !lastSavedComposition.Equals(CareTaker.CurrentItem))
                 {
                     var result = MessageBox.Show("You have not saved. Do you want to save before closing?", "Save?", MessageBoxButton.YesNoCancel);
                     if (result == MessageBoxResult.Yes)
@@ -90,17 +90,15 @@ namespace DPA_Musicsheets.Editing
             }
             else
             {
+                // prevent closing because the current state forbids it
                 args.Cancel = true;
             }
-
         }
 
         public void SetState(IEditorState state)
         {
             currentState = state;
         }
-
-
 
         public void RenderAfterChange()
         {
@@ -113,24 +111,14 @@ namespace DPA_Musicsheets.Editing
 
         public bool CanCommandExecute(IEditorCommand command)
         {
-            var args = new CommandArgs(this)
-            {
-                LilypondText = _lilypondViewModel.LilypondText,
-                SelectionEnd = 0, // _lilypondViewModel.
-                SelectionStart = 0 //
-            };
+            var args = ConstructCommandArgs();
             return command.CanExecute(args);
         }
 
         public void ExecuteCommand(IEditorCommand command)
         {
             _compositionChangedByCommand = true;
-            var args = new CommandArgs(this)
-            {
-                LilypondText = _lilypondViewModel.LilypondText,
-                SelectionEnd = 0, // _lilypondViewModel.
-                SelectionStart = 0 //
-            };
+            var args = ConstructCommandArgs();
             if (command.CanExecute(args))
             {
                 command.Execute(args);
@@ -156,7 +144,17 @@ namespace DPA_Musicsheets.Editing
 
         public void SetLastSavedComp(Composition comp)
         {
-            lastSavedComp = comp;
+            lastSavedComposition = comp;
+        }
+
+        private EditorCommandArgs ConstructCommandArgs()
+        {
+            return new EditorCommandArgs(this)
+            {
+                LilypondText = _lilypondViewModel.LilypondText,
+                SelectionStart = _lilypondViewModel.SelectionStart,
+                SelectionLength = _lilypondViewModel.SelectionLength
+            };
         }
     }
 }

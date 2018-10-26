@@ -9,8 +9,6 @@ namespace DPA_Musicsheets.Editing.Shortcuts
 {
     public abstract class BaseEditorShortcutHandler : BaseShortcutChainHandler
     {
-        private IShortcutChainHandler _nextHandler = null;
-
         protected IEditor _editor;
         public BaseEditorShortcutHandler(IEditor editor)
         {

@@ -9,9 +9,9 @@ namespace DPA_Musicsheets.Editing.Commands
 {
     class RedoCommand : IEditorCommand
     {
-        public bool CanExecute(CommandArgs args) => args.Editor.CareTaker.CanRedo;
+        public bool CanExecute(EditorCommandArgs args) => args.Editor.CareTaker.CanRedo;
 
-        public void Execute(CommandArgs args)
+        public void Execute(EditorCommandArgs args)
         {
             Composition composition = new Composition();
             composition.Restore(args.Editor.CareTaker.Redo());

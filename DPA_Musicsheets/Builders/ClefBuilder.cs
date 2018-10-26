@@ -9,7 +9,7 @@ namespace DPA_Musicsheets.Builders
 {
     public class ClefBuilder
     {
-        private static Dictionary<ClefTone, int> defaultBars = new Dictionary<ClefTone, int>()
+        private static readonly Dictionary<ClefTone, int> defaultBars = new Dictionary<ClefTone, int>()
         {
             {ClefTone.G, 2 },
             {ClefTone.F, 4 },
