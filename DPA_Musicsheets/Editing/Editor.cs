@@ -26,8 +26,8 @@ namespace DPA_Musicsheets.Editing
         private SaveAsCommand saveAsCommand = new SaveAsCommand();
         private bool _compositionChangedByCommand = false;
 
-        public EditorCaretaker CareTaker { get; private set; }
         private Composition lastSavedComp;
+        public EditorCaretaker CareTaker { get; private set; } = new EditorCaretaker();
 
         public Editor(MusicLoader musicLoader, KeyDispatcher keyDispatcher,
             LilypondViewModel lilypondViewModel)
@@ -40,6 +40,7 @@ namespace DPA_Musicsheets.Editing
             _musicLoader.OnCompositionChanged += _musicLoader_OnCompositionChanged;
             _lilypondViewModel.TextChanged += _lilypondViewModel_TextChanged;
             _mainViewModel.OnWindowClosing += _mainViewModel_OnWindowClosing;
+            lastSavedComp = new Composition();
         }
 
         private void _lilypondViewModel_TextChanged(object sender, string lilypondText)
@@ -141,7 +142,7 @@ namespace DPA_Musicsheets.Editing
             return new LilypondCompositionFactory().ReadComposition(lilypondText);
         }
 
-        public void setLastSavedComp(Composition comp)
+        public void SetLastSavedComp(Composition comp)
         {
             lastSavedComp = comp;
         }

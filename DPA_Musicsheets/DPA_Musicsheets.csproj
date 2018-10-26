@@ -133,6 +133,7 @@
     <Compile Include="Editing\Commands\RedoCommand.cs" />
     <Compile Include="Editing\Commands\SaveAsCommand.cs" />
     <Compile Include="Editing\Commands\UndoCommand.cs" />
+    <Compile Include="Editing\DummyEditor.cs" />
     <Compile Include="Editing\Memento\EditorCaretaker.cs" />
     <Compile Include="Editing\Memento\CompositionMemento.cs" />
     <Compile Include="Editing\Memento\LinkedListExtensions.cs" />
@@ -140,9 +141,11 @@
     <Compile Include="Editing\Saving\ICompositionSaver.cs" />
     <Compile Include="Editing\Saving\LilypondSaver.cs" />
     <Compile Include="Editing\Saving\MidiSaver.cs" />
+    <Compile Include="Editing\Shortcuts\ShortcutKeyType.cs" />
+    <Compile Include="Editing\Shortcuts\ShortcutPattern.cs" />
     <Compile Include="Editing\State\BaseEditorState.cs" />
     <Compile Include="Editing\State\IdleEditorState.cs" />
-    <Compile Include="Editing\State\IEditor.cs" />
+    <Compile Include="Editing\IEditor.cs" />
     <Compile Include="Editing\State\IEditorState.cs" />
     <Compile Include="Editing\State\TypingEditorState.cs" />
     <Compile Include="Factories\AbstractCompositionFactory.cs" />
